@@ -41,7 +41,7 @@ class _ClientsPageState extends State<ClientsPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddClientPage(
-                      title: "Ajouter un Client ",
+                      title: "Ajouter un Client",
                     ),
                   ),
                 )

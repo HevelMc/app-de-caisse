@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         //Tests
         child: ServiceCard(
-          service: Service("Kobido", 40),
+          service: Service("Kobido", 40, null, false),
         ),
       ),
       bottomNavigationBar: new BottomBar(0),

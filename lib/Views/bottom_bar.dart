@@ -1,3 +1,4 @@
+import 'package:Caisse/Views/services.dart';
 import 'package:flutter/material.dart';
 import 'package:Caisse/Models/colors.dart';
 import 'home.dart';
@@ -49,6 +50,7 @@ class _BottomBarState extends State<BottomBar> {
 
     if (index == 0) page = HomePage(title: 'Statistiques');
     if (index == 1) page = ClientsPage(title: 'Clients');
+    if (index == 2) page = ServicesPage(title: 'Prestations');
 
     Navigator.pop(context);
 

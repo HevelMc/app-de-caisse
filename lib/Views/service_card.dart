@@ -1,4 +1,5 @@
 import 'package:Caisse/Models/styles.dart';
+import 'package:Caisse/Models/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:Caisse/Models/service.dart';
 
@@ -16,11 +17,30 @@ class ServiceCard extends StatelessWidget {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            Positioned(
-              top: 10,
-              left: 10,
-              child: textWithBackground(service.getPrice().toString() + "€"),
-            ),
+            if (!service.package)
+              Positioned(
+                top: 10,
+                left: 10,
+                child: textWithBackground(service.getPrice().toString() + "€"),
+              )
+            else
+              Positioned(
+                top: 10,
+                left: 10,
+                child: textWithBackground(service.getPrice().toString() + "€"),
+              ),
+            if (service.package)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: textWithBackground("FORFAIT"),
+              ),
+            if (service.duration != null)
+              Positioned(
+                bottom: 10,
+                left: 10,
+                child: textWithBackground(service.getDurationText()),
+              ),
             Center(
               child: Text(
                 service.getName().toUpperCase(),
@@ -40,10 +60,7 @@ class ServiceCard extends StatelessWidget {
             ),
           ],
           gradient: LinearGradient(
-            colors: [
-              Color.fromRGBO(225, 210, 241, 100),
-              Color.fromRGBO(191, 117, 248, 100)
-            ],
+            colors: (service.package) ? packageCardColors : basicCardColors,
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
           ),
