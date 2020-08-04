@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      home: HomePage(title: 'Statistiques'),
       debugShowCheckedModeBanner: false,
     );
   }
