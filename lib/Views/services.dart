@@ -1,16 +1,13 @@
-import 'package:Caisse/Models/service.dart';
-import 'package:Caisse/Views/service_card.dart';
-import 'package:Caisse/main.dart';
 import 'package:flutter/material.dart';
 
+import '../Models/service.dart';
+import 'service_card.dart';
 import '../main.dart';
 import 'add_service.dart';
 import 'bottom_bar.dart';
 
 class ServicesPage extends StatefulWidget {
-  ServicesPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  final String title = "Prestations";
 
   @override
   _ServicesPageState createState() => _ServicesPageState();
@@ -24,7 +21,7 @@ class _ServicesPageState extends State<ServicesPage> {
       body: Column(
         children: <Widget>[
           Container(
-            margin: new EdgeInsets.symmetric(vertical: 20.0),
+            margin: EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -37,16 +34,13 @@ class _ServicesPageState extends State<ServicesPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: FlatButton.icon(
-              padding: new EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
               onPressed: () => {
-                Navigator.push(
+                Utils.openPage(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => AddServicePage(
-                      title: "Ajouter une Prestation",
-                    ),
-                  ),
-                )
+                  AddServicePage(),
+                  false,
+                ),
               },
               label: Text(
                 "AJOUTER",
@@ -61,7 +55,7 @@ class _ServicesPageState extends State<ServicesPage> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: new EdgeInsets.only(bottom: 12.0),
+              padding: EdgeInsets.only(bottom: 12.0),
               itemBuilder: (context, index) {
                 return getCard(getServices()[index]);
               },

@@ -1,7 +1,8 @@
-import 'package:Caisse/Models/styles.dart';
-import 'package:Caisse/Models/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:Caisse/Models/service.dart';
+
+import '../Models/styles.dart';
+import '../Models/colors.dart';
+import '../Models/service.dart';
 
 class ServiceCard extends StatelessWidget {
   final Service service;
@@ -11,24 +12,17 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(25),
+      margin: EdgeInsets.all(15),
       child: Container(
         height: 200,
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            if (!service.package)
-              Positioned(
-                top: 10,
-                left: 10,
-                child: textWithBackground(service.getPrice().toString() + "€"),
-              )
-            else
-              Positioned(
-                top: 10,
-                left: 10,
-                child: textWithBackground(service.getPrice().toString() + "€"),
-              ),
+            Positioned(
+              top: 10,
+              left: 10,
+              child: textWithBackground(service.getPrice().toString() + "€"),
+            ),
             if (service.package)
               Positioned(
                 top: 10,
@@ -41,6 +35,14 @@ class ServiceCard extends StatelessWidget {
                 left: 10,
                 child: textWithBackground(service.getDurationText()),
               ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: widgetWithBackground(Icon(
+                Icons.delete,
+                color: Colors.redAccent,
+              )),
+            ),
             Center(
               child: Text(
                 service.getName().toUpperCase(),
@@ -70,6 +72,13 @@ class ServiceCard extends StatelessWidget {
   }
 
   Container textWithBackground(String text) {
+    return widgetWithBackground(Text(
+      text,
+      style: cardPriceStyle,
+    ));
+  }
+
+  Container widgetWithBackground(Widget widget) {
     return Container(
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -77,10 +86,7 @@ class ServiceCard extends StatelessWidget {
         color: Colors.black.withOpacity(0.3),
       ),
       child: Center(
-        child: Text(
-          text,
-          style: cardPriceStyle,
-        ),
+        child: widget,
       ),
     );
   }

@@ -1,15 +1,20 @@
-import 'package:Caisse/Views/home.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
+import 'Models/client.dart';
+import 'Views/home.dart';
 import 'Models/service.dart';
 
-List<Service> servicesList = new List<Service>();
+List<Service> servicesList = List();
+List<Service> selectedList = List();
+List<Client> clientsList = List();
 
 void main() {
   List<Service> makeServices(int count) {
-    List<Service> list = new List();
+    List<Service> list = List();
     for (int i = 0; i < count; i++) {
-      list.add(new Service("Test", 30, null, false));
+      list.add(Service("Test", 30, null, Random().nextBool()));
     }
     return list;
   }
@@ -27,8 +32,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'Statistiques'),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Utils {
+  static void openPage(BuildContext context, Widget page, [pop = true]) {
+    if (pop) Navigator.pop(context);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page),
     );
   }
 }

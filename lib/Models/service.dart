@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'service.g.dart';
+
+@JsonSerializable(nullable: true)
 class Service {
   String name;
   int price;
@@ -11,6 +16,10 @@ class Service {
     this.duration = duration;
     this.package = package;
   }
+
+  factory Service.fromJson(Map<String, dynamic> json) =>
+      _$ServiceFromJson(json);
+  Map<String, dynamic> toJson() => _$ServiceToJson(this);
 
   String getName() {
     return this.name;

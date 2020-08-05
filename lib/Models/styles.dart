@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:Caisse/Models/colors.dart';
+
+import 'colors.dart';
 
 TextStyle cardNameStyle = TextStyle(
   fontSize: 36,

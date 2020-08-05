@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:Caisse/Views/service_card.dart';
-import 'package:Caisse/Models/service.dart';
+
+import 'service_card.dart';
+import '../Models/service.dart';
 
 import 'bottom_bar.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  final String title = "Statistiques";
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -24,7 +23,7 @@ class _HomePageState extends State<HomePage> {
           service: Service("Kobido", 40, null, false),
         ),
       ),
-      bottomNavigationBar: new BottomBar(0),
+      bottomNavigationBar: BottomBar(0),
     );
   }
 }

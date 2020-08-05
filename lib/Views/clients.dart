@@ -1,16 +1,21 @@
+import 'package:Caisse/Views/add_to_client.dart';
 import 'package:flutter/material.dart';
-import 'package:Caisse/Models/client.dart';
 
+import '../Models/client.dart';
 import 'add_client.dart';
+import '../main.dart';
 import 'bottom_bar.dart';
 
 class ClientsPage extends StatefulWidget {
-  ClientsPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  final String title = "Clients";
 
   @override
   _ClientsPageState createState() => _ClientsPageState();
+
+  static List<Client> getClients() {
+    clientsList.sort((a, b) => a.lastName.compareTo(b.lastName));
+    return clientsList;
+  }
 }
 
 class _ClientsPageState extends State<ClientsPage> {
@@ -22,7 +27,7 @@ class _ClientsPageState extends State<ClientsPage> {
       body: Column(
         children: <Widget>[
           Container(
-            margin: new EdgeInsets.symmetric(vertical: 20.0),
+            margin: EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -35,16 +40,13 @@ class _ClientsPageState extends State<ClientsPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: FlatButton.icon(
-              padding: new EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
               onPressed: () => {
-                Navigator.push(
+                Utils.openPage(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => AddClientPage(
-                      title: "Ajouter un Client",
-                    ),
-                  ),
-                )
+                  AddClientPage(),
+                  false,
+                ),
               },
               label: Text(
                 "AJOUTER",
@@ -59,14 +61,15 @@ class _ClientsPageState extends State<ClientsPage> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: new EdgeInsets.symmetric(vertical: 12.0),
+              padding: EdgeInsets.symmetric(vertical: 12.0),
               itemBuilder: (context, index) {
-                String currentLetter = getClients()[index].lastName[0];
+                String currentLetter =
+                    ClientsPage.getClients()[index].lastName[0];
                 Card card = Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: getTile(getClients()[index]),
+                  child: getTile(ClientsPage.getClients()[index]),
                 );
                 if (lastLetter != currentLetter) {
                   lastLetter = currentLetter;
@@ -95,7 +98,7 @@ class _ClientsPageState extends State<ClientsPage> {
                   return card;
                 }
               },
-              itemCount: getClients().length,
+              itemCount: ClientsPage.getClients().length,
             ),
           ),
         ],
@@ -104,30 +107,46 @@ class _ClientsPageState extends State<ClientsPage> {
     );
   }
 
-  List<Client> getClients() {
-    List<Client> list = makeClients(10);
-    list.sort((a, b) => a.lastName.compareTo(b.lastName));
-    return list;
-  }
-
   List<Client> makeClients(int count) {
-    List<Client> list = new List();
+    List<Client> list = List();
     for (int i = 0; i < count; i++) {
-      list.add(new Client("virginie" + i.toString(), "lopez"));
+      list.add(Client(
+        "virginie" + i.toString(),
+        "lopez",
+        null,
+        null,
+        null,
+        null,
+        null,
+      ));
     }
-    list.add(new Client("céline", "herve"));
+    list.add(Client(
+      "céline",
+      "herve",
+      null,
+      null,
+      null,
+      null,
+      null,
+    ));
     return list;
   }
 
   ListTile getTile(Client client) {
     return ListTile(
-      title: new Text(
+      title: Text(
         client.getNameReversed(),
         style: TextStyle(fontSize: 16),
       ),
       trailing: IconButton(
         icon: Icon(Icons.shop_two),
-        onPressed: null,
+        onPressed: () => {
+          Utils.openPage(
+            context,
+            AddToClientPage(),
+            false,
+          ),
+        },
       ),
     );
   }

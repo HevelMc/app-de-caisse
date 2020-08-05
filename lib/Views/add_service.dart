@@ -1,16 +1,14 @@
-import 'package:Caisse/Models/client.dart';
-import 'package:Caisse/Views/services.dart';
-import 'package:Caisse/main.dart';
-import 'package:Caisse/Models/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../Models/client.dart';
+import 'services.dart';
+import '../main.dart';
+import '../Models/service.dart';
 import 'bottom_bar.dart';
 
 class AddServicePage extends StatefulWidget {
-  AddServicePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  final String title = "Ajouter une prestation";
 
   @override
   _AddServicePageState createState() => _AddServicePageState();
@@ -27,13 +25,7 @@ class _AddServicePageState extends State<AddServicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(widget.title).buildIcon(IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        tooltip: "Retour",
-      )),
+      appBar: TopBar(widget.title).build(),
       body: Container(
         margin: EdgeInsets.all(20),
         child: Form(
@@ -47,7 +39,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   style: TextStyle(fontSize: 20),
                   decoration: InputDecoration(
                     icon: Icon(Icons.text_fields),
-                    labelText: 'Nom de la Prestation',
+                    labelText: 'Nom de la prestation',
                     labelStyle: TextStyle(fontSize: 20),
                   ),
                   validator: (value) {
@@ -72,7 +64,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Flexible(
+                    Flexible(
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 20),
@@ -87,7 +79,7 @@ class _AddServicePageState extends State<AddServicePage> {
                     ),
                     Flexible(
                       child: Container(
-                        margin: new EdgeInsets.symmetric(horizontal: 10),
+                        margin: EdgeInsets.symmetric(horizontal: 10),
                         child: CheckboxListTile(
                           title: const Text(
                             'Forfait',
@@ -106,7 +98,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   ],
                 ),
                 Container(
-                  margin: new EdgeInsets.symmetric(vertical: 40.0),
+                  margin: EdgeInsets.symmetric(vertical: 40.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -119,21 +111,21 @@ class _AddServicePageState extends State<AddServicePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: FlatButton.icon(
-                    padding: new EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       vertical: 6,
                       horizontal: 10,
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        servicesList.add(Service(this.name, this.price,
-                            this.duration, this.package));
-                        Navigator.pop(context);
-                        Navigator.push(
+                        servicesList.add(Service(
+                          this.name,
+                          this.price,
+                          this.duration,
+                          this.package,
+                        ));
+                        Utils.openPage(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ServicesPage(title: 'Prestations'),
-                          ),
+                          ServicesPage(),
                         );
                       }
                     },
@@ -153,7 +145,7 @@ class _AddServicePageState extends State<AddServicePage> {
           ),
         ),
       ),
-      bottomNavigationBar: new BottomBar(2),
+      bottomNavigationBar: BottomBar(2),
     );
   }
 }
