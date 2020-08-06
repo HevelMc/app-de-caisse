@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 
 import '../Models/data.dart';
 import '../Models/client.dart';
+import '../Models/styles.dart';
 import '../main.dart';
+import 'client.dart';
 import 'clients.dart';
 import 'bottom_bar.dart';
 
@@ -61,11 +63,11 @@ class _AddClientPageState extends State<AddClientPage> {
                     inputFormatters: [CapitalizeTextFormatter()],
                     autofocus: true,
                     autocorrect: false,
-                    style: TextStyle(fontSize: 20),
+                    style: defaultStyle,
                     decoration: InputDecoration(
                       icon: Icon(Icons.person),
                       labelText: 'Prénom',
-                      labelStyle: TextStyle(fontSize: 20),
+                      labelStyle: defaultStyle,
                     ),
                     validator: (value) {
                       if (value.isEmpty) return 'Veuillez entrer le prénom';
@@ -77,11 +79,11 @@ class _AddClientPageState extends State<AddClientPage> {
                     initialValue: this.lastName,
                     inputFormatters: [UpperCaseTextFormatter()],
                     autocorrect: false,
-                    style: TextStyle(fontSize: 20),
+                    style: defaultStyle,
                     decoration: InputDecoration(
                       icon: Icon(Icons.people),
                       labelText: 'Nom de famille',
-                      labelStyle: TextStyle(fontSize: 20),
+                      labelStyle: defaultStyle,
                     ),
                     validator: (value) {
                       if (value.isEmpty) return 'Veuillez entrer le nom';
@@ -92,11 +94,11 @@ class _AddClientPageState extends State<AddClientPage> {
                   TextFormField(
                     initialValue: this.email,
                     autocorrect: false,
-                    style: TextStyle(fontSize: 20),
+                    style: defaultStyle,
                     decoration: InputDecoration(
                       icon: Icon(Icons.email),
                       labelText: 'Email',
-                      labelStyle: TextStyle(fontSize: 20),
+                      labelStyle: defaultStyle,
                     ),
                     onChanged: (newValue) => this.email = newValue,
                   ),
@@ -104,11 +106,11 @@ class _AddClientPageState extends State<AddClientPage> {
                     initialValue:
                         (this.number == null) ? null : this.number.toString(),
                     keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 20),
+                    style: defaultStyle,
                     decoration: InputDecoration(
                       icon: Icon(Icons.phone),
                       labelText: 'Numéro',
-                      labelStyle: TextStyle(fontSize: 20),
+                      labelStyle: defaultStyle,
                     ),
                     onChanged: (newV) => this.number = int.tryParse(newV),
                   ),
@@ -118,11 +120,11 @@ class _AddClientPageState extends State<AddClientPage> {
                         : this.postCode.toString(),
                     autofocus: false,
                     keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 20),
+                    style: defaultStyle,
                     decoration: InputDecoration(
                       icon: Icon(Icons.folder),
                       labelText: 'Code Postal',
-                      labelStyle: TextStyle(fontSize: 20),
+                      labelStyle: defaultStyle,
                     ),
                     onChanged: (newV) => this.postCode = int.tryParse(newV),
                   ),
@@ -132,7 +134,7 @@ class _AddClientPageState extends State<AddClientPage> {
                       icon: Icon(Icons.cake),
                       label: Text(
                         "Date d'anniversaire",
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                       onPressed: () {
                         showDatePicker(
@@ -156,7 +158,7 @@ class _AddClientPageState extends State<AddClientPage> {
                       child: RichText(
                         text: TextSpan(
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 18,
                             color: Colors.black,
                           ),
                           children: <TextSpan>[
@@ -204,7 +206,6 @@ class _AddClientPageState extends State<AddClientPage> {
                                     (birthday != null)
                                         ? birthday.month
                                         : null)),
-                                DataManager().saveClients(),
                               }
                             else
                               {
@@ -218,13 +219,14 @@ class _AddClientPageState extends State<AddClientPage> {
                                 client.birthMonth =
                                     (birthday != null) ? birthday.month : null,
                               },
-                            Utils.openPage(context, ClientsPage()),
+                            DataManager().saveClients(),
+                            Utils.openPage(context, ClientPage(client)),
                           },
                       },
                       label: Text(
                         (client == null) ? "Ajouter" : "Modifier",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24, color: Colors.green),
+                        style: addButton,
                       ),
                       icon: Icon(
                         (client == null) ? Icons.add : Icons.edit,
@@ -264,7 +266,7 @@ class _AddClientPageState extends State<AddClientPage> {
                                   new FlatButton(
                                     child: Text(
                                       "Supprimer",
-                                      style: TextStyle(color: Colors.red),
+                                      style: removeButton,
                                     ),
                                     onPressed: () => {
                                       clientsList.remove(client),
@@ -278,7 +280,7 @@ class _AddClientPageState extends State<AddClientPage> {
                         label: Text(
                           "Supprimer",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 24, color: Colors.red),
+                          style: removeButton,
                         ),
                         icon: Icon(
                           Icons.delete,

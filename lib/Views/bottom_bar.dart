@@ -28,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
       currentIndex: this._selectedIndex,
       elevation: 20.0,
       selectedItemColor: Color.fromRGBO(54, 191, 252, 100),
-      selectedFontSize: 16,
+      selectedFontSize: 14,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

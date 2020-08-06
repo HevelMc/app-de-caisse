@@ -5,13 +5,11 @@ import 'service.dart';
 
 part 'client_services.g.dart';
 
-@JsonSerializable(nullable: true)
+@JsonSerializable(nullable: true, explicitToJson: true)
 class ClientService {
-  Client client;
   Service service;
   DateTime date;
-  ClientService(Client client, Service service, DateTime date) {
-    this.client = client;
+  ClientService(Service service, DateTime date) {
     this.service = service;
     this.date = date;
   }

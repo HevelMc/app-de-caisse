@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import '../Models/client.dart';
 import '../Models/service.dart';
 import '../Models/client_services.dart';
+import '../Models/styles.dart';
+import '../main.dart';
 import 'add_to_client.dart';
 import 'service_card.dart';
-import '../main.dart';
 import 'bottom_bar.dart';
 
 class ClientPage extends StatefulWidget {
@@ -54,7 +55,7 @@ class _ClientPageState extends State<ClientPage> {
               label: Text(
                 "Modifier les informations",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, color: Colors.black),
+                style: editButton,
               ),
               icon: Icon(
                 Icons.edit,
@@ -63,7 +64,7 @@ class _ClientPageState extends State<ClientPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10),
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -76,7 +77,7 @@ class _ClientPageState extends State<ClientPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: FlatButton.icon(
-              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+              padding: EdgeInsets.all(10),
               onPressed: () => {
                 Utils.openPage(
                   context,
@@ -87,7 +88,7 @@ class _ClientPageState extends State<ClientPage> {
               label: Text(
                 "Ajouter une prestation",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, color: Colors.green),
+                style: addButton,
               ),
               icon: Icon(
                 Icons.add,

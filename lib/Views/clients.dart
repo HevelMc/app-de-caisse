@@ -2,8 +2,9 @@ import 'package:Caisse/Views/add_to_client.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/client.dart';
-import 'add_client.dart';
+import '../Models/styles.dart';
 import '../main.dart';
+import 'add_client.dart';
 import 'bottom_bar.dart';
 import 'client.dart';
 
@@ -50,9 +51,9 @@ class _ClientsPageState extends State<ClientsPage> {
                 ),
               },
               label: Text(
-                "AJOUTER",
+                "Ajouter",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, color: Colors.green),
+                style: addButton,
               ),
               icon: Icon(
                 Icons.add,
@@ -91,7 +92,7 @@ class _ClientsPageState extends State<ClientsPage> {
                           currentLetter,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -141,7 +142,7 @@ class _ClientsPageState extends State<ClientsPage> {
     return ListTile(
       title: Text(
         client.getNameReversed(),
-        style: TextStyle(fontSize: 16),
+        style: defaultStyle,
       ),
       trailing: IconButton(
         icon: Icon(Icons.shop_two),

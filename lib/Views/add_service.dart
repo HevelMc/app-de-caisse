@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 
 import '../Models/client.dart';
 import '../Models/data.dart';
-import '../main.dart';
 import '../Models/service.dart';
+import '../Models/styles.dart';
+import '../main.dart';
 import 'services.dart';
 import 'bottom_bar.dart';
 
@@ -37,11 +38,11 @@ class _AddServicePageState extends State<AddServicePage> {
                 TextFormField(
                   autofocus: true,
                   autocorrect: false,
-                  style: TextStyle(fontSize: 20),
+                  style: defaultStyle,
                   decoration: InputDecoration(
                     icon: Icon(Icons.text_fields),
                     labelText: 'Nom de la prestation',
-                    labelStyle: TextStyle(fontSize: 20),
+                    labelStyle: defaultStyle,
                   ),
                   validator: (value) {
                     if (value.isEmpty) return 'Veuillez entrer le nom';
@@ -51,11 +52,11 @@ class _AddServicePageState extends State<AddServicePage> {
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
-                  style: TextStyle(fontSize: 20),
+                  style: defaultStyle,
                   decoration: InputDecoration(
                     icon: Icon(Icons.euro_symbol),
                     labelText: 'Prix (en euros)',
-                    labelStyle: TextStyle(fontSize: 20),
+                    labelStyle: defaultStyle,
                   ),
                   validator: (value) {
                     if (value.isEmpty) return 'Veuillez entrer le prix';
@@ -68,31 +69,33 @@ class _AddServicePageState extends State<AddServicePage> {
                     Flexible(
                       child: TextFormField(
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 20),
+                        style: defaultStyle,
                         decoration: InputDecoration(
                           icon: Icon(Icons.timer),
                           labelText: 'Durée (min.)',
-                          labelStyle: TextStyle(fontSize: 20),
+                          labelStyle: defaultStyle,
                         ),
                         onChanged: (newValue) =>
                             this.duration = int.tryParse(newValue),
                       ),
                     ),
                     Flexible(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: CheckboxListTile(
-                          title: const Text(
-                            'Forfait',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black54,
+                      child: Center(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8),
+                          child: CheckboxListTile(
+                            title: const Text(
+                              'Forfait',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black54,
+                              ),
                             ),
+                            value: this.package,
+                            onChanged: (val) {
+                              setState(() => this.package = val);
+                            },
                           ),
-                          value: this.package,
-                          onChanged: (val) {
-                            setState(() => this.package = val);
-                          },
                         ),
                       ),
                     ),
@@ -132,9 +135,9 @@ class _AddServicePageState extends State<AddServicePage> {
                       }
                     },
                     label: Text(
-                      "AJOUTER",
+                      "Ajouter",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24, color: Colors.green),
+                      style: addButton,
                     ),
                     icon: Icon(
                       Icons.add,

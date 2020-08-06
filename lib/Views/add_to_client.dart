@@ -1,16 +1,18 @@
 import 'package:Caisse/Models/client_services.dart';
+import 'package:Caisse/Models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'clients.dart';
 import '../Models/client.dart';
 import '../Models/service.dart';
-import 'service_card.dart';
+import '../Models/styles.dart';
 import '../main.dart';
+import 'clients.dart';
+import 'service_card.dart';
 import 'bottom_bar.dart';
 
 class AddToClientPage extends StatefulWidget {
-  AddToClientPage({Key key, this.client}) : super(key: key);
+  AddToClientPage({Key key, @required this.client}) : super(key: key);
 
   final String title = "Ajouter au client";
   final Client client;
@@ -53,14 +55,14 @@ class _AddToClientPageState extends State<AddToClientPage> {
                   onPressed: () => {
                     Utils.openPage(
                       context,
-                      AddServiceToClientPage(),
+                      AddServiceToClientPage(client: client),
                       false,
                     ),
                   },
                   label: Text(
                     "Ajouter une prestation",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24, color: Colors.green),
+                    style: addButton,
                   ),
                   icon: Icon(
                     Icons.add,
@@ -73,14 +75,14 @@ class _AddToClientPageState extends State<AddToClientPage> {
                 children: <Widget>[
                   Text(
                     "Moyen de règlement : ",
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
                   ),
                   DropdownButton<String>(
                     value: paymentMethod,
                     icon: Icon(Icons.arrow_drop_down),
                     iconSize: 34,
                     elevation: 16,
-                    style: TextStyle(color: Colors.black87, fontSize: 20),
+                    style: TextStyle(color: Colors.black87, fontSize: 14),
                     onChanged: (String newValue) {
                       setState(() {
                         paymentMethod = newValue;
@@ -116,11 +118,11 @@ class _AddToClientPageState extends State<AddToClientPage> {
                             child: TextFormField(
                               initialValue: "0",
                               keyboardType: TextInputType.number,
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 14),
                               decoration: InputDecoration(
                                 icon: Icon(Icons.local_offer),
                                 labelText: 'Pourcentage de réduction',
-                                labelStyle: TextStyle(fontSize: 20),
+                                labelStyle: TextStyle(fontSize: 14),
                               ),
                               validator: (value) {
                                 int pct = int.tryParse(value);
@@ -149,7 +151,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
                       child: RichText(
                         text: TextSpan(
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 18,
                             color: Colors.black,
                           ),
                           children: <TextSpan>[
@@ -183,19 +185,19 @@ class _AddToClientPageState extends State<AddToClientPage> {
                             {
                               selectedList.forEach((element) {
                                 client.history.add(ClientService(
-                                  client,
                                   element,
                                   DateTime.now(),
                                 ));
                               }),
                               selectedList.clear(),
+                              DataManager().saveClients(),
                               Utils.openPage(context, ClientsPage()),
                             }
                         },
                         label: Text(
                           "Valider",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 24, color: Colors.green),
+                          style: addButton,
                         ),
                         icon: Icon(
                           Icons.check,
@@ -225,12 +227,21 @@ class _AddToClientPageState extends State<AddToClientPage> {
 
 class AddServiceToClientPage extends StatefulWidget {
   final String title = "Ajouter une prestation";
+  final Client client;
+
+  const AddServiceToClientPage({Key key, @required this.client})
+      : super(key: key);
 
   @override
-  _AddServiceToClientPageState createState() => _AddServiceToClientPageState();
+  _AddServiceToClientPageState createState() =>
+      _AddServiceToClientPageState(client);
 }
 
 class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
+  final Client client;
+
+  _AddServiceToClientPageState(this.client);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,7 +255,7 @@ class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
               child: Text(
                 "Choisir une prestation",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -257,7 +268,7 @@ class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
                     child: card,
                     onPressed: () {
                       selectedList.add(servicesList[index]);
-                      Utils.openPage(context, AddToClientPage());
+                      Utils.openPage(context, AddToClientPage(client: client));
                     },
                   );
                 },

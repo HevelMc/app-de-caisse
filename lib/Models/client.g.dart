@@ -33,5 +33,5 @@ Map<String, dynamic> _$ClientToJson(Client instance) => <String, dynamic>{
       'postcode': instance.postcode,
       'birthDay': instance.birthDay,
       'birthMonth': instance.birthMonth,
-      'history': instance.history,
+      'history': instance.history?.map((e) => e?.toJson())?.toList(),
     };

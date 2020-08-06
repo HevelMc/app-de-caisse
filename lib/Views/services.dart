@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../Models/service.dart';
-import 'service_card.dart';
+import '../Models/styles.dart';
 import '../main.dart';
+import 'service_card.dart';
 import 'add_service.dart';
 import 'bottom_bar.dart';
 
@@ -43,9 +44,9 @@ class _ServicesPageState extends State<ServicesPage> {
                 ),
               },
               label: Text(
-                "AJOUTER",
+                "Ajouter",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, color: Colors.green),
+                style: addButton,
               ),
               icon: Icon(
                 Icons.add,
