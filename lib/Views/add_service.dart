@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../Models/client.dart';
-import 'services.dart';
+import '../Models/data.dart';
 import '../main.dart';
 import '../Models/service.dart';
+import 'services.dart';
 import 'bottom_bar.dart';
 
 class AddServicePage extends StatefulWidget {
@@ -123,6 +124,7 @@ class _AddServicePageState extends State<AddServicePage> {
                           this.duration,
                           this.package,
                         ));
+                        DataManager().saveServices();
                         Utils.openPage(
                           context,
                           ServicesPage(),

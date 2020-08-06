@@ -1,20 +1,23 @@
-import 'package:Caisse/Views/clients.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../Models/data.dart';
 import '../Models/client.dart';
 import '../main.dart';
+import 'clients.dart';
 import 'bottom_bar.dart';
 
 class AddClientPage extends StatefulWidget {
-  final String title = "Ajouter un client";
+  final Client client;
+  AddClientPage(this.client);
 
   @override
-  _AddClientPageState createState() => _AddClientPageState();
+  _AddClientPageState createState() => _AddClientPageState(client);
 }
 
 class _AddClientPageState extends State<AddClientPage> {
   final _formKey = GlobalKey<FormState>();
+  Client client;
   String firstName;
   String lastName;
   String email;
@@ -22,10 +25,28 @@ class _AddClientPageState extends State<AddClientPage> {
   int postCode;
   DateTime birthday;
 
+  _AddClientPageState(Client client) {
+    this.client = client;
+    if (client != null) {
+      this.firstName = client.firstName;
+      this.lastName = client.lastName;
+      this.email = client.email;
+      this.number = client.number;
+      this.postCode = client.postcode;
+      if (client.birthDay != null && client.birthMonth != null)
+        this.birthday = DateTime(
+          DateTime.now().year,
+          client.birthMonth,
+          client.birthDay,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(widget.title).build(),
+      appBar: TopBar((client == null) ? "Ajouter un client" : client.getName())
+          .build(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: Container(
@@ -36,6 +57,7 @@ class _AddClientPageState extends State<AddClientPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
+                    initialValue: this.firstName,
                     inputFormatters: [CapitalizeTextFormatter()],
                     autofocus: true,
                     autocorrect: false,
@@ -52,6 +74,7 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newValue) => this.firstName = newValue,
                   ),
                   TextFormField(
+                    initialValue: this.lastName,
                     inputFormatters: [UpperCaseTextFormatter()],
                     autocorrect: false,
                     style: TextStyle(fontSize: 20),
@@ -67,6 +90,7 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newValue) => this.lastName = newValue,
                   ),
                   TextFormField(
+                    initialValue: this.email,
                     autocorrect: false,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
@@ -77,6 +101,8 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newValue) => this.email = newValue,
                   ),
                   TextFormField(
+                    initialValue:
+                        (this.number == null) ? null : this.number.toString(),
                     keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
@@ -87,6 +113,9 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newV) => this.number = int.tryParse(newV),
                   ),
                   TextFormField(
+                    initialValue: (this.postCode == null)
+                        ? null
+                        : this.postCode.toString(),
                     autofocus: false,
                     keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 20),
@@ -108,7 +137,9 @@ class _AddClientPageState extends State<AddClientPage> {
                       onPressed: () {
                         showDatePicker(
                           context: context,
-                          initialDate: DateTime.now(),
+                          initialDate: (this.birthday != null)
+                              ? this.birthday
+                              : DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now().add(
                             Duration(days: 364, hours: 4),
@@ -119,30 +150,29 @@ class _AddClientPageState extends State<AddClientPage> {
                       },
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.black,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(text: 'Anniversaire : '),
-                          TextSpan(
-                            text: (birthday != null)
-                                ? (((birthday.day < 10) ? "0" : "") +
-                                    birthday.day.toString() +
-                                    "/" +
-                                    ((birthday.month < 10) ? "0" : "") +
-                                    birthday.month.toString())
-                                : "?",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                  if (birthday != null)
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black,
                           ),
-                        ],
+                          children: <TextSpan>[
+                            TextSpan(text: 'Anniversaire : '),
+                            TextSpan(
+                              text: (((birthday.day < 10) ? "0" : "") +
+                                  birthday.day.toString() +
+                                  "/" +
+                                  ((birthday.month < 10) ? "0" : "") +
+                                  birthday.month.toString()),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20.0),
                     decoration: BoxDecoration(
@@ -160,32 +190,102 @@ class _AddClientPageState extends State<AddClientPage> {
                       padding:
                           EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                       onPressed: () => {
-                        ClientsPage.getClients().add(
-                          Client(
-                              firstName,
-                              lastName,
-                              email,
-                              number,
-                              postCode,
-                              (birthday != null) ? birthday.day : null,
-                              (birthday != null) ? birthday.month : null),
-                        ),
-                        Utils.openPage(
-                          context,
-                          ClientsPage(),
-                        ),
+                        if (_formKey.currentState.validate())
+                          {
+                            if (client == null)
+                              {
+                                ClientsPage.getClients().add(Client(
+                                    firstName,
+                                    lastName,
+                                    email,
+                                    number,
+                                    postCode,
+                                    (birthday != null) ? birthday.day : null,
+                                    (birthday != null)
+                                        ? birthday.month
+                                        : null)),
+                                DataManager().saveClients(),
+                              }
+                            else
+                              {
+                                client.firstName = this.firstName,
+                                client.lastName = this.lastName,
+                                client.email = this.email,
+                                client.number = this.number,
+                                client.postcode = this.postCode,
+                                client.birthDay =
+                                    (birthday != null) ? birthday.day : null,
+                                client.birthMonth =
+                                    (birthday != null) ? birthday.month : null,
+                              },
+                            Utils.openPage(context, ClientsPage()),
+                          },
                       },
                       label: Text(
-                        "AJOUTER",
+                        (client == null) ? "Ajouter" : "Modifier",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 24, color: Colors.green),
                       ),
                       icon: Icon(
-                        Icons.add,
-                        size: 40,
+                        (client == null) ? Icons.add : Icons.edit,
+                        size: 30,
                       ),
                     ),
                   ),
+                  if (client != null)
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 20.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(3, 3),
+                            blurRadius: 3,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: FlatButton.icon(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 6,
+                          horizontal: 10,
+                        ),
+                        onPressed: () => showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Supprimer le client ?"),
+                                content: Text(
+                                    "Êtes-vous sur de vouloir supprimer " +
+                                        client.getName() +
+                                        " ?"),
+                                actions: <Widget>[
+                                  new FlatButton(
+                                    child: Text(
+                                      "Supprimer",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    onPressed: () => {
+                                      clientsList.remove(client),
+                                      DataManager().saveClients(),
+                                      Utils.openPage(context, ClientsPage()),
+                                    },
+                                  ),
+                                ],
+                              );
+                            }),
+                        label: Text(
+                          "Supprimer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 24, color: Colors.red),
+                        ),
+                        icon: Icon(
+                          Icons.delete,
+                          size: 30,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

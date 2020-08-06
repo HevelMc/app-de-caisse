@@ -1,22 +1,30 @@
+import 'package:Caisse/Models/client_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'clients.dart';
+import '../Models/client.dart';
 import '../Models/service.dart';
 import 'service_card.dart';
 import '../main.dart';
 import 'bottom_bar.dart';
 
 class AddToClientPage extends StatefulWidget {
-  AddToClientPage({Key key}) : super(key: key);
+  AddToClientPage({Key key, this.client}) : super(key: key);
 
   final String title = "Ajouter au client";
+  final Client client;
 
   @override
-  _AddToClientPageState createState() => _AddToClientPageState();
+  _AddToClientPageState createState() => _AddToClientPageState(client);
 }
 
 class _AddToClientPageState extends State<AddToClientPage> {
+  _AddToClientPageState(this.client);
+
   String paymentMethod = 'Carte bancaire';
+  final Client client;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +97,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
                 ],
               ),
               Form(
+                key: _formKey,
                 child: Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) {
@@ -131,22 +140,70 @@ class _AddToClientPageState extends State<AddToClientPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(20),
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(text: 'Total : '),
-                      TextSpan(
-                        text: getTotal().toString(),
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(text: 'Total : '),
+                            TextSpan(
+                              text: getTotal().toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(text: " €"),
+                          ],
+                        ),
                       ),
-                      TextSpan(text: " €"),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(3, 3),
+                            blurRadius: 3,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: FlatButton.icon(
+                        //padding: EdgeInsets.symmetric(horizontal: 10),
+                        onPressed: () => {
+                          if (_formKey.currentState.validate())
+                            {
+                              selectedList.forEach((element) {
+                                client.history.add(ClientService(
+                                  client,
+                                  element,
+                                  DateTime.now(),
+                                ));
+                              }),
+                              selectedList.clear(),
+                              Utils.openPage(context, ClientsPage()),
+                            }
+                        },
+                        label: Text(
+                          "Valider",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 24, color: Colors.green),
+                        ),
+                        icon: Icon(
+                          Icons.check,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

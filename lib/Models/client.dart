@@ -1,3 +1,4 @@
+import 'package:Caisse/Models/client_services.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'client.g.dart';
@@ -12,6 +13,7 @@ class Client {
   int postcode;
   int birthDay;
   int birthMonth;
+  List<ClientService> history;
 
   Client(String firstName, String lastName, String email, int number,
       int postcode, int birthDay, int birthMonth) {
@@ -22,6 +24,7 @@ class Client {
     this.postcode = postcode;
     this.birthDay = birthDay;
     this.birthMonth = birthMonth;
+    this.history = List<ClientService>();
   }
 
   factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);

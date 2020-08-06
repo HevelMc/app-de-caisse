@@ -5,6 +5,7 @@ import '../Models/client.dart';
 import 'add_client.dart';
 import '../main.dart';
 import 'bottom_bar.dart';
+import 'client.dart';
 
 class ClientsPage extends StatefulWidget {
   final String title = "Clients";
@@ -44,7 +45,7 @@ class _ClientsPageState extends State<ClientsPage> {
               onPressed: () => {
                 Utils.openPage(
                   context,
-                  AddClientPage(),
+                  AddClientPage(null),
                   false,
                 ),
               },
@@ -65,11 +66,15 @@ class _ClientsPageState extends State<ClientsPage> {
               itemBuilder: (context, index) {
                 String currentLetter =
                     ClientsPage.getClients()[index].lastName[0];
-                Card card = Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                FlatButton card = FlatButton(
+                  onPressed: () => Utils.openPage(context,
+                      ClientPage(ClientsPage.getClients()[index]), false),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: getTile(ClientsPage.getClients()[index]),
                   ),
-                  child: getTile(ClientsPage.getClients()[index]),
                 );
                 if (lastLetter != currentLetter) {
                   lastLetter = currentLetter;
@@ -143,7 +148,7 @@ class _ClientsPageState extends State<ClientsPage> {
         onPressed: () => {
           Utils.openPage(
             context,
-            AddToClientPage(),
+            AddToClientPage(client: client),
             false,
           ),
         },
