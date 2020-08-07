@@ -1,3 +1,4 @@
+import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:Caisse/Views/add_to_client.dart';
 import 'package:flutter/material.dart';
 
@@ -111,31 +112,6 @@ class _ClientsPageState extends State<ClientsPage> {
       ),
       bottomNavigationBar: BottomBar(1),
     );
-  }
-
-  List<Client> makeClients(int count) {
-    List<Client> list = List();
-    for (int i = 0; i < count; i++) {
-      list.add(Client(
-        "virginie" + i.toString(),
-        "lopez",
-        null,
-        null,
-        null,
-        null,
-        null,
-      ));
-    }
-    list.add(Client(
-      "céline",
-      "herve",
-      null,
-      null,
-      null,
-      null,
-      null,
-    ));
-    return list;
   }
 
   ListTile getTile(Client client) {

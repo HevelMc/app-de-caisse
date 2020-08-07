@@ -184,13 +184,16 @@ class _AddToClientPageState extends State<AddToClientPage> {
                           if (_formKey.currentState.validate())
                             {
                               selectedList.forEach((element) {
-                                client.history.add(ClientService(
+                                ClientService cService = ClientService(
                                   element,
                                   DateTime.now(),
-                                ));
+                                );
+                                client.history.add(cService);
+                                allServicesList.add(cService);
                               }),
                               selectedList.clear(),
                               DataManager().saveClients(),
+                              DataManager().saveAllServices(),
                               Utils.openPage(context, ClientsPage()),
                             }
                         },

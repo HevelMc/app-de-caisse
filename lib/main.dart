@@ -1,4 +1,6 @@
+import 'package:Caisse/Models/client_services.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'Models/data.dart';
 import 'Models/client.dart';
@@ -8,11 +10,14 @@ import 'Models/service.dart';
 List<Service> servicesList = List();
 List<Service> selectedList = List();
 List<Client> clientsList;
+List<ClientService> allServicesList = List();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   servicesList = await DataManager().loadServices();
   clientsList = await DataManager().loadClients();
+  allServicesList = await DataManager().loadAllServices();
+  await initializeDateFormatting('fr_FR', null);
   runApp(MyApp());
 }
 

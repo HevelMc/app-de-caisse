@@ -103,8 +103,9 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newValue) => this.email = newValue,
                   ),
                   TextFormField(
-                    initialValue:
-                        (this.number == null) ? null : this.number.toString(),
+                    initialValue: (this.number == null)
+                        ? null
+                        : this.number.toString().padLeft(10, '0'),
                     keyboardType: TextInputType.number,
                     style: defaultStyle,
                     decoration: InputDecoration(
@@ -117,7 +118,7 @@ class _AddClientPageState extends State<AddClientPage> {
                   TextFormField(
                     initialValue: (this.postCode == null)
                         ? null
-                        : this.postCode.toString(),
+                        : this.postCode.toString().padLeft(5, '0'),
                     autofocus: false,
                     keyboardType: TextInputType.number,
                     style: defaultStyle,

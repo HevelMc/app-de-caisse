@@ -3,6 +3,7 @@ import 'client.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'client_services.dart';
 import 'service.dart';
 
 class DataManager {
@@ -63,6 +64,18 @@ class DataManager {
     return list;
   }
 
+  Future<List<ClientService>> loadAllServices() async {
+    List<ClientService> list = List();
+
+    List<String> jsonList = await this.getList("allServices");
+    if (jsonList == null) return List();
+    jsonList.forEach((element) {
+      list.add(ClientService.fromJson(this.jsonToMap(element)));
+    });
+
+    return list;
+  }
+
   saveServices() async {
     List<String> list = List();
     servicesList.forEach((element) {
@@ -77,5 +90,13 @@ class DataManager {
       list.add(mapToJson(element.toJson()));
     });
     saveList("clients", list);
+  }
+
+  saveAllServices() async {
+    List<String> list = List();
+    allServicesList.forEach((element) {
+      list.add(mapToJson(element.toJson()));
+    });
+    saveList("allServices", list);
   }
 }
