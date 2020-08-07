@@ -99,6 +99,54 @@ class _AddToClientPageState extends State<AddToClientPage> {
                   ),
                 ],
               ),
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: RaisedButton.icon(
+                  icon: Icon(Icons.date_range),
+                  label: Text(
+                    "Choisir la date",
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  ),
+                  onPressed: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate:
+                          (this.date != null) ? this.date : DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now(),
+                    ).then(
+                      (value) => setState(
+                        () {
+                          if (value == null) value = DateTime.now();
+                          this.date = value;
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: 'Date : '),
+                      TextSpan(
+                        text: (((date.day < 10) ? "0" : "") +
+                            date.day.toString() +
+                            "/" +
+                            ((date.month < 10) ? "0" : "") +
+                            date.month.toString()),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Form(
                 key: _formKey,
                 child: Expanded(
@@ -187,7 +235,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
                               selectedList.forEach((element) {
                                 ClientService cService = ClientService(
                                   element,
-                                  DateTime.now(),
+                                  this.date,
                                 );
                                 client.history.add(cService);
                                 allServicesList.add(cService);

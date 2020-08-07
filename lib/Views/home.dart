@@ -41,8 +41,14 @@ class _HomePageState extends State<HomePage> {
                 );
                 if (picked != null && picked.length == 2)
                   setState(() {
+                    if (picked[1].isBefore(picked[0])) {
+                      DateTime c = picked[0];
+                      picked[0] = picked[1];
+                      picked[1] = c;
+                    }
                     firstDate = picked[0];
-                    secondDate = picked[1];
+                    secondDate = picked[1]
+                        .add(Duration(hours: 23, minutes: 59, seconds: 59));
                   });
               },
               child: Text("Choisir la période", style: defaultStyle),
@@ -56,23 +62,24 @@ class _HomePageState extends State<HomePage> {
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: 22),
-                        children: [
-                          TextSpan(text: "Statistiques entre le "),
-                          TextSpan(
-                            text: formatDate(firstDate),
-                            style: TextStyle(
-                              backgroundColor: Colors.orange.withOpacity(0.2),
-                            ),
+                      style: TextStyle(color: Colors.black, fontSize: 22),
+                      children: [
+                        TextSpan(text: "Statistiques entre le "),
+                        TextSpan(
+                          text: formatDate(firstDate),
+                          style: TextStyle(
+                            backgroundColor: Colors.orange.withOpacity(0.2),
                           ),
-                          TextSpan(text: " et le "),
-                          TextSpan(
-                            text: formatDate(secondDate),
-                            style: TextStyle(
-                              backgroundColor: Colors.orange.withOpacity(0.2),
-                            ),
+                        ),
+                        TextSpan(text: " et le "),
+                        TextSpan(
+                          text: formatDate(secondDate),
+                          style: TextStyle(
+                            backgroundColor: Colors.orange.withOpacity(0.2),
                           ),
-                        ]),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Text("Prestations : " + getData().toString(),
@@ -92,10 +99,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   getData() {
-    totalNumber = allServicesList.length;
-    allServicesList.forEach((element) {
-      totalMoney = element.service.price;
-    });
+    print("first " + firstDate.toString());
+    print("second " + secondDate.toString());
+    totalNumber = 0;
+    totalMoney = 0;
+    allServicesList.forEach(
+      (element) {
+        print(element.date);
+        if ((element.date.isAfter(secondDate) &&
+                element.date.isBefore(firstDate)) ||
+            (element.date.isAfter(firstDate) &&
+                element.date.isBefore(secondDate)) ||
+            element.date.isAtSameMomentAs(firstDate) ||
+            element.date.isAtSameMomentAs(secondDate)) {
+          totalNumber++;
+          totalMoney += element.service.price;
+        }
+      },
+    );
     return totalNumber;
   }
 }

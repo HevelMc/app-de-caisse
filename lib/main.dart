@@ -40,9 +40,10 @@ class Utils {
   static openPage(BuildContext context, Widget page, [pop = true]) {
     if (pop)
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-          (Route<dynamic> route) => false);
+        context,
+        MaterialPageRoute(builder: (context) => page),
+        (Route<dynamic> route) => false,
+      );
     else
       Navigator.push(
         context,
