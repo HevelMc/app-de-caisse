@@ -22,9 +22,39 @@ class ClientsPage extends StatefulWidget {
 }
 
 class _ClientsPageState extends State<ClientsPage> {
+  TextEditingController searchController = TextEditingController();
+  List<Client> clients = [];
+
+  @override
+  void initState() {
+    filterList();
+    searchController.addListener(() {
+      filterList();
+    });
+    super.initState();
+  }
+
+  filterList() {
+    List<Client> clients = [];
+    clients.addAll(clientsList);
+    if (searchController.text.isNotEmpty) {
+      clients.retainWhere((client) => client
+          .getName()
+          .toLowerCase()
+          .contains(searchController.text.toLowerCase()));
+    }
+    setState(() {
+      this.clients = clients;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    String lastLetter = "";
+    List<String> strList = [];
+    clients.forEach((element) {
+      strList.add(element.getNameReversed());
+    });
+
     return Scaffold(
       appBar: TopBar(widget.title).build(),
       body: Column(
@@ -63,49 +93,49 @@ class _ClientsPageState extends State<ClientsPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
+            child: AlphabetListScrollView(
+              strList: strList,
+              indexedHeight: (i) {
+                return 80;
+              },
+              keyboardUsage: true,
+              showPreview: true,
               itemBuilder: (context, index) {
-                String currentLetter =
-                    ClientsPage.getClients()[index].lastName[0];
                 FlatButton card = FlatButton(
-                  onPressed: () => Utils.openPage(context,
-                      ClientPage(ClientsPage.getClients()[index]), false),
+                  padding: EdgeInsets.only(left: 20, right: 50),
+                  onPressed: () => Utils.openPage(
+                      context, ClientPage(clients[index]), false),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    child: getTile(ClientsPage.getClients()[index]),
+                    child: getTile(clients[index]),
                   ),
                 );
-                if (lastLetter != currentLetter) {
-                  lastLetter = currentLetter;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: (index == 0) ? 0 : 20,
-                          left: 20,
-                          bottom: 10,
-                        ),
-                        child: Text(
-                          currentLetter,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                return card;
+              },
+              headerWidgetList: <AlphabetScrollListHeader>[
+                AlphabetScrollListHeader(
+                  widgetList: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextFormField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          suffix: Icon(
+                            Icons.search,
+                            color: Colors.grey,
                           ),
+                          labelText: "Rechercher",
                         ),
                       ),
-                      card
-                    ],
-                  );
-                } else {
-                  lastLetter = currentLetter;
-                  return card;
-                }
-              },
-              itemCount: ClientsPage.getClients().length,
+                    )
+                  ],
+                  icon: Icon(Icons.search),
+                  indexedHeaderHeight: (index) => 80,
+                ),
+              ],
             ),
           ),
         ],

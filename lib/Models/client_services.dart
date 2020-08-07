@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'client.dart';
 import 'service.dart';
 
 part 'client_services.g.dart';

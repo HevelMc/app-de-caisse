@@ -197,16 +197,15 @@ class _AddClientPageState extends State<AddClientPage> {
                           {
                             if (client == null)
                               {
-                                ClientsPage.getClients().add(Client(
+                                client = Client(
                                     firstName,
                                     lastName,
                                     email,
                                     number,
                                     postCode,
                                     (birthday != null) ? birthday.day : null,
-                                    (birthday != null)
-                                        ? birthday.month
-                                        : null)),
+                                    (birthday != null) ? birthday.month : null),
+                                ClientsPage.getClients().add(client),
                               }
                             else
                               {

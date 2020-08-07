@@ -26,6 +26,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
 
   String paymentMethod = 'Carte bancaire';
   final Client client;
+  DateTime date = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
   @override
