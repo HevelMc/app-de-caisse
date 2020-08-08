@@ -1,3 +1,4 @@
+import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,34 +12,45 @@ import 'bottom_bar.dart';
 
 class AddServicePage extends StatefulWidget {
   final Service service;
+  final ServiceCategory category;
+  final bool modifyCategory;
 
-  const AddServicePage({Key key, this.service}) : super(key: key);
+  const AddServicePage({Key key, this.service, this.category, this.modifyCategory}) : super(key: key);
 
   @override
-  _AddServicePageState createState() => _AddServicePageState(service);
+  _AddServicePageState createState() => _AddServicePageState(service, category, modifyCategory);
 }
 
 class _AddServicePageState extends State<AddServicePage> {
   final Service service;
+  final ServiceCategory category;
   final _formKey = GlobalKey<FormState>();
   String name;
   int price;
   int duration;
   bool package = false;
+  bool modifyCategory = false;
 
-  _AddServicePageState(this.service) {
+  _AddServicePageState(this.service, this.category, modify) {
     if (service != null) {
       name = service.name;
       price = service.price;
       duration = service.duration;
       package = service.package;
+    } else if (category != null && modify == true) {
+      name = category.name;
     }
+    if (modify == true) modifyCategory = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(service == null ? "Ajouter une prestation" : service.name)
+      appBar: TopBar(service != null
+              ? service.name
+              : (category == null
+                  ? "Ajouter une catégorie"
+                  : modifyCategory ? category.name : "Ajouter une prestation"))
           .build(),
       body: Container(
         margin: EdgeInsets.all(20),
@@ -54,7 +66,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   style: defaultStyle,
                   decoration: InputDecoration(
                     icon: Icon(Icons.text_fields),
-                    labelText: 'Nom de la prestation',
+                    labelText: modifyCategory ? 'Nom de la catégorie ' : 'Nom de la prestation',
                     labelStyle: defaultStyle,
                   ),
                   validator: (value) {
@@ -63,60 +75,60 @@ class _AddServicePageState extends State<AddServicePage> {
                   },
                   onChanged: (newValue) => this.name = newValue,
                 ),
-                TextFormField(
-                  initialValue: price == null ? null : this.price.toString(),
-                  keyboardType: TextInputType.number,
-                  style: defaultStyle,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.euro_symbol),
-                    labelText: 'Prix (en euros)',
-                    labelStyle: defaultStyle,
-                  ),
-                  validator: (value) {
-                    if (value.isEmpty) return 'Veuillez entrer le prix';
-                    return null;
-                  },
-                  onChanged: (newValue) => this.price = int.tryParse(newValue),
-                ),
-                Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        initialValue:
-                            duration == null ? null : this.duration.toString(),
-                        keyboardType: TextInputType.number,
-                        style: defaultStyle,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.timer),
-                          labelText: 'Durée (min.)',
-                          labelStyle: defaultStyle,
-                        ),
-                        onChanged: (newValue) =>
-                            this.duration = int.tryParse(newValue),
-                      ),
+                if (!modifyCategory)
+                  TextFormField(
+                    initialValue: price == null ? null : this.price.toString(),
+                    keyboardType: TextInputType.number,
+                    style: defaultStyle,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.euro_symbol),
+                      labelText: 'Prix (en euros)',
+                      labelStyle: defaultStyle,
                     ),
-                    Flexible(
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8),
-                          child: CheckboxListTile(
-                            title: const Text(
-                              'Forfait',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black54,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Veuillez entrer le prix';
+                      return null;
+                    },
+                    onChanged: (newValue) => this.price = int.tryParse(newValue),
+                  ),
+                if (!modifyCategory)
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          initialValue: duration == null ? null : this.duration.toString(),
+                          keyboardType: TextInputType.number,
+                          style: defaultStyle,
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.timer),
+                            labelText: 'Durée (min.)',
+                            labelStyle: defaultStyle,
+                          ),
+                          onChanged: (newValue) => this.duration = int.tryParse(newValue),
+                        ),
+                      ),
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            child: CheckboxListTile(
+                              title: const Text(
+                                'Forfait',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
                               ),
+                              value: this.package,
+                              onChanged: (val) {
+                                setState(() => this.package = val);
+                              },
                             ),
-                            value: this.package,
-                            onChanged: (val) {
-                              setState(() => this.package = val);
-                            },
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 40.0),
                   decoration: BoxDecoration(
@@ -137,8 +149,12 @@ class _AddServicePageState extends State<AddServicePage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        if (this.service == null) {
-                          servicesList.add(Service(
+                        if (category == null && !modifyCategory)
+                          serviceCategories.add(ServiceCategory(this.name));
+                        else if (category != null && modifyCategory) {
+                          category.name = this.name;
+                        } else if (this.service == null) {
+                          category.list.add(Service(
                             this.name,
                             this.price,
                             this.duration,
@@ -151,25 +167,25 @@ class _AddServicePageState extends State<AddServicePage> {
                           service.package = this.package;
                         }
 
-                        DataManager().saveServices();
+                        DataManager().saveCategories();
                         Utils.openPage(
                           context,
-                          ServicesPage(),
+                          ServicesPage(category: category),
                         );
                       }
                     },
                     label: Text(
-                      service == null ? "Ajouter" : "Modifier",
+                      service != null || modifyCategory == true ? "Modifier" : "Ajouter",
                       textAlign: TextAlign.center,
-                      style: service == null ? addButton : editButton,
+                      style: service != null || modifyCategory == true ? editButton : addButton,
                     ),
                     icon: Icon(
-                      service == null ? Icons.add : Icons.edit,
+                      service != null || modifyCategory == true ? Icons.edit : Icons.add,
                       size: 30,
                     ),
                   ),
                 ),
-                if (this.service != null)
+                if (service != null || modifyCategory == true)
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20.0),
                     decoration: BoxDecoration(
@@ -192,11 +208,10 @@ class _AddServicePageState extends State<AddServicePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text("Supprimer le service ?"),
-                              content: Text(
-                                  "Êtes-vous sur de vouloir supprimer " +
-                                      service.getName() +
-                                      " ?"),
+                              title: Text((modifyCategory)
+                                  ? "Supprimer la catégorie ?"
+                                  : "Supprimer la prestation ?"),
+                              content: Text("Êtes-vous sur de vouloir supprimer " + name + " ?"),
                               actions: <Widget>[
                                 new FlatButton(
                                   child: Text(
@@ -204,9 +219,13 @@ class _AddServicePageState extends State<AddServicePage> {
                                     style: removeButton,
                                   ),
                                   onPressed: () => {
-                                    servicesList.remove(service),
-                                    DataManager().saveServices(),
-                                    Utils.openPage(context, ServicesPage()),
+                                    if (modifyCategory)
+                                      serviceCategories.remove(category)
+                                    else
+                                      category.list.remove(service),
+                                    DataManager().saveCategories(),
+                                    Utils.openPage(
+                                        context, ServicesPage(category: modifyCategory ? null : category)),
                                   },
                                 ),
                               ],
@@ -235,8 +254,7 @@ class _AddServicePageState extends State<AddServicePage> {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text?.toUpperCase(),
       selection: newValue.selection,
@@ -246,8 +264,7 @@ class UpperCaseTextFormatter extends TextInputFormatter {
 
 class CapitalizeTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: capitalize(newValue.text),
       selection: newValue.selection,

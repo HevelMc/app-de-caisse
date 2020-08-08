@@ -1,5 +1,6 @@
 import 'package:Caisse/Models/client_services.dart';
 import 'package:Caisse/Models/data.dart';
+import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -110,8 +111,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
                   onPressed: () {
                     showDatePicker(
                       context: context,
-                      initialDate:
-                          (this.date != null) ? this.date : DateTime.now(),
+                      initialDate: (this.date != null) ? this.date : DateTime.now(),
                       firstDate: DateTime(2020),
                       lastDate: DateTime.now(),
                     ).then(
@@ -175,10 +175,8 @@ class _AddToClientPageState extends State<AddToClientPage> {
                               ),
                               validator: (value) {
                                 int pct = int.tryParse(value);
-                                if (pct == null)
-                                  return 'Veuillez entrer un pourcentage';
-                                if (pct < 0 || pct > 100)
-                                  return 'Veuillez entrer un nombre entre 0 et 100';
+                                if (pct == null) return 'Veuillez entrer un pourcentage';
+                                if (pct < 0 || pct > 100) return 'Veuillez entrer un nombre entre 0 et 100';
                                 return null;
                               },
                             ),
@@ -279,20 +277,20 @@ class _AddToClientPageState extends State<AddToClientPage> {
 
 class AddServiceToClientPage extends StatefulWidget {
   final String title = "Ajouter une prestation";
+  final ServiceCategory category;
   final Client client;
 
-  const AddServiceToClientPage({Key key, @required this.client})
-      : super(key: key);
+  const AddServiceToClientPage({Key key, @required this.client, this.category}) : super(key: key);
 
   @override
-  _AddServiceToClientPageState createState() =>
-      _AddServiceToClientPageState(client);
+  _AddServiceToClientPageState createState() => _AddServiceToClientPageState(client, category);
 }
 
 class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
   final Client client;
+  final ServiceCategory category;
 
-  _AddServiceToClientPageState(this.client);
+  _AddServiceToClientPageState(this.client, this.category);
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +303,7 @@ class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
             Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "Choisir une prestation",
+                category == null ? "Choisir une catégorie" : "Choisir une prestation",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -315,26 +313,39 @@ class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  Container card = getCard(servicesList[index]).build(context);
+                  Container card;
+                  if (category == null)
+                    card = getCardCategory(serviceCategories[index]).build(context);
+                  else
+                    card = getCard(category.list[index]).build(context);
                   return FlatButton(
                     child: card,
                     onPressed: () {
-                      selectedList.add(servicesList[index]);
-                      Utils.openPage(context, AddToClientPage(client: client));
+                      if (category == null) {
+                        Utils.openPage(context,
+                            AddServiceToClientPage(client: client, category: serviceCategories[index]));
+                      } else {
+                        selectedList.add(category.list[index]);
+                        Utils.openPage(context, AddToClientPage(client: client));
+                      }
                     },
                   );
                 },
-                itemCount: servicesList.length,
+                itemCount: (category == null) ? serviceCategories.length : category.list.length,
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomBar(2),
+      bottomNavigationBar: BottomBar(1),
     );
   }
 
   ServiceCard getCard(Service service) {
     return ServiceCard(service: service);
+  }
+
+  ServiceCard getCardCategory(ServiceCategory category) {
+    return ServiceCard(category: category);
   }
 }

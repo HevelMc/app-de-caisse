@@ -1,3 +1,5 @@
+import 'package:Caisse/Models/service_category.dart';
+
 import '../main.dart';
 import 'client.dart';
 import 'dart:convert';
@@ -40,13 +42,13 @@ class DataManager {
     return json.decode(string);
   }
 
-  Future<List<Service>> loadServices() async {
-    List<Service> list = List();
+  Future<List<ServiceCategory>> loadCategories() async {
+    List<ServiceCategory> list = List();
 
-    List<String> jsonList = await DataManager().getList("services");
+    List<String> jsonList = await DataManager().getList("serviceCategories");
     if (jsonList == null) return List();
     jsonList.forEach((element) {
-      list.add(Service.fromJson(DataManager().jsonToMap(element)));
+      list.add(ServiceCategory.fromJson(DataManager().jsonToMap(element)));
     });
 
     return list;
@@ -76,12 +78,12 @@ class DataManager {
     return list;
   }
 
-  saveServices() async {
+  saveCategories() async {
     List<String> list = List();
-    servicesList.forEach((element) {
+    serviceCategories.forEach((element) {
       list.add(mapToJson(element.toJson()));
     });
-    saveList("services", list);
+    saveList("serviceCategories", list);
   }
 
   saveClients() async {

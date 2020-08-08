@@ -1,3 +1,4 @@
+import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/client_services.dart';
@@ -8,16 +9,15 @@ import '../Models/service.dart';
 class ServiceCard extends StatelessWidget {
   final Service service;
   final ClientService clientService;
+  final ServiceCategory category;
 
-  const ServiceCard({Key key, this.service, this.clientService})
-      : super(key: key);
+  const ServiceCard({Key key, this.service, this.clientService, this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Service service =
-        (this.service == null) ? this.clientService.service : this.service;
-    DateTime date =
-        (this.clientService == null) ? null : this.clientService.date;
+    Service service = (this.clientService != null) ? this.clientService.service : this.service;
+    DateTime date = (this.clientService == null) ? null : this.clientService.date;
+    String name = (service != null) ? service.getName() : category.name;
     return Container(
       margin: EdgeInsets.all(15),
       child: Container(
@@ -25,18 +25,19 @@ class ServiceCard extends StatelessWidget {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            Positioned(
-              top: 10,
-              left: 10,
-              child: textWithBackground(service.getPrice().toString() + "€"),
-            ),
-            if (service.package)
+            if (service != null)
+              Positioned(
+                top: 10,
+                left: 10,
+                child: textWithBackground(service.getPrice().toString() + "€"),
+              ),
+            if (service != null && service.package)
               Positioned(
                 top: 10,
                 right: 10,
                 child: textWithBackground("FORFAIT"),
               ),
-            if (service.duration != null)
+            if (service != null && service.duration != null)
               Positioned(
                 bottom: 10,
                 left: 10,
@@ -54,10 +55,8 @@ class ServiceCard extends StatelessWidget {
               ),
             Center(
               child: Text(
-                service.getName().toUpperCase(),
-                style: (threeParts(service.getName()))
-                    ? cardNameStyle.apply(fontSizeFactor: 0.7)
-                    : cardNameStyle,
+                name.toUpperCase(),
+                style: (threeParts(name)) ? cardNameStyle.apply(fontSizeFactor: 0.7) : cardNameStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -74,7 +73,9 @@ class ServiceCard extends StatelessWidget {
             ),
           ],
           gradient: LinearGradient(
-            colors: (service.package) ? packageCardColors : basicCardColors,
+            colors: service == null
+                ? categoryCardColors
+                : (service.package ? packageCardColors : basicCardColors),
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
           ),

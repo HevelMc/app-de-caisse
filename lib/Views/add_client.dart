@@ -47,8 +47,7 @@ class _AddClientPageState extends State<AddClientPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar((client == null) ? "Ajouter un client" : client.getName())
-          .build(),
+      appBar: TopBar((client == null) ? "Ajouter un client" : client.getName()).build(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: Container(
@@ -103,9 +102,7 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newValue) => this.email = newValue,
                   ),
                   TextFormField(
-                    initialValue: (this.number == null)
-                        ? null
-                        : this.number.toString().padLeft(10, '0'),
+                    initialValue: (this.number == null) ? null : this.number.toString().padLeft(10, '0'),
                     keyboardType: TextInputType.number,
                     style: defaultStyle,
                     decoration: InputDecoration(
@@ -116,9 +113,7 @@ class _AddClientPageState extends State<AddClientPage> {
                     onChanged: (newV) => this.number = int.tryParse(newV),
                   ),
                   TextFormField(
-                    initialValue: (this.postCode == null)
-                        ? null
-                        : this.postCode.toString().padLeft(5, '0'),
+                    initialValue: (this.postCode == null) ? null : this.postCode.toString().padLeft(5, '0'),
                     autofocus: false,
                     keyboardType: TextInputType.number,
                     style: defaultStyle,
@@ -140,9 +135,7 @@ class _AddClientPageState extends State<AddClientPage> {
                       onPressed: () {
                         showDatePicker(
                           context: context,
-                          initialDate: (this.birthday != null)
-                              ? this.birthday
-                              : DateTime.now(),
+                          initialDate: (this.birthday != null) ? this.birthday : DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now().add(
                             Duration(days: 364, hours: 4),
@@ -188,8 +181,7 @@ class _AddClientPageState extends State<AddClientPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: FlatButton.icon(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                       onPressed: () => {
                         if (_formKey.currentState.validate())
                           {
@@ -212,10 +204,8 @@ class _AddClientPageState extends State<AddClientPage> {
                                 client.email = this.email,
                                 client.number = this.number,
                                 client.postcode = this.postCode,
-                                client.birthDay =
-                                    (birthday != null) ? birthday.day : null,
-                                client.birthMonth =
-                                    (birthday != null) ? birthday.month : null,
+                                client.birthDay = (birthday != null) ? birthday.day : null,
+                                client.birthMonth = (birthday != null) ? birthday.month : null,
                               },
                             DataManager().saveClients(),
                             Utils.openPage(context, ClientPage(client)),
@@ -256,10 +246,8 @@ class _AddClientPageState extends State<AddClientPage> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text("Supprimer le client ?"),
-                                content: Text(
-                                    "Êtes-vous sur de vouloir supprimer " +
-                                        client.getName() +
-                                        " ?"),
+                                content:
+                                    Text("Êtes-vous sur de vouloir supprimer " + client.getName() + " ?"),
                                 actions: <Widget>[
                                   new FlatButton(
                                     child: Text(
@@ -299,8 +287,7 @@ class _AddClientPageState extends State<AddClientPage> {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text?.toUpperCase(),
       selection: newValue.selection,
@@ -310,8 +297,7 @@ class UpperCaseTextFormatter extends TextInputFormatter {
 
 class CapitalizeTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: capitalize(newValue.text),
       selection: newValue.selection,

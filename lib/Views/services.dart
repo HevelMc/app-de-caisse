@@ -1,3 +1,4 @@
+import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/service.dart';
@@ -9,16 +10,23 @@ import 'bottom_bar.dart';
 
 class ServicesPage extends StatefulWidget {
   final String title = "Prestations";
+  final ServiceCategory category;
+
+  const ServicesPage({Key key, this.category}) : super(key: key);
 
   @override
-  _ServicesPageState createState() => _ServicesPageState();
+  _ServicesPageState createState() => _ServicesPageState(category);
 }
 
 class _ServicesPageState extends State<ServicesPage> {
+  final ServiceCategory category;
+
+  _ServicesPageState(this.category);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(widget.title).build(),
+      appBar: TopBar(category == null ? widget.title : category.name).build(),
       body: Column(
         children: <Widget>[
           Container(
@@ -39,7 +47,7 @@ class _ServicesPageState extends State<ServicesPage> {
               onPressed: () => {
                 Utils.openPage(
                   context,
-                  AddServicePage(),
+                  AddServicePage(category: category),
                   false,
                 ),
               },
@@ -58,19 +66,18 @@ class _ServicesPageState extends State<ServicesPage> {
             child: ListView.builder(
               padding: EdgeInsets.only(bottom: 12.0),
               itemBuilder: (context, index) {
-                return getCard(getServices()[index]);
+                if (category == null)
+                  return getCardCategory(serviceCategories[index]);
+                else
+                  return getCard(category.list[index]);
               },
-              itemCount: getServices().length,
+              itemCount: category == null ? serviceCategories.length : category.list.length,
             ),
           ),
         ],
       ),
       bottomNavigationBar: BottomBar(2),
     );
-  }
-
-  List<Service> getServices() {
-    return servicesList;
   }
 
   FlatButton getCard(Service service) {
@@ -80,6 +87,20 @@ class _ServicesPageState extends State<ServicesPage> {
       onLongPress: () => Utils.openPage(
         context,
         AddServicePage(service: service),
+      ),
+    );
+  }
+
+  FlatButton getCardCategory(ServiceCategory category) {
+    return FlatButton(
+      child: ServiceCard(category: category),
+      onPressed: () => Utils.openPage(
+        context,
+        ServicesPage(category: category),
+      ),
+      onLongPress: () => Utils.openPage(
+        context,
+        AddServicePage(category: category, modifyCategory: true),
       ),
     );
   }

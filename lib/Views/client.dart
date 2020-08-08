@@ -121,12 +121,11 @@ class _ClientPageState extends State<ClientPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Supprimer cette prestation de l'historique ?"),
-              content: Text(
-                  "Êtes-vous sur de vouloir supprimer la prestation " +
-                      clientService.service.name +
-                      " de l'historique de " +
-                      client.getName() +
-                      " ?"),
+              content: Text("Êtes-vous sur de vouloir supprimer la prestation " +
+                  clientService.service.name +
+                  " de l'historique de " +
+                  client.getName() +
+                  " ?"),
               actions: <Widget>[
                 new FlatButton(
                   child: Text(
