@@ -1,8 +1,8 @@
 import 'package:Caisse/Views/add_client.dart';
 import 'package:flutter/material.dart';
 
+import '../Models/data.dart';
 import '../Models/client.dart';
-import '../Models/service.dart';
 import '../Models/client_services.dart';
 import '../Models/styles.dart';
 import '../main.dart';
@@ -26,6 +26,8 @@ class _ClientPageState extends State<ClientPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<ClientService> sortedHistory = client.history;
+    sortedHistory.sort((a, b) => -a.date.compareTo(b.date));
     return Scaffold(
       appBar: TopBar(client.getName()).build(),
       body: Column(
@@ -100,9 +102,9 @@ class _ClientPageState extends State<ClientPage> {
             child: ListView.builder(
               padding: EdgeInsets.only(bottom: 12.0),
               itemBuilder: (context, index) {
-                return getCard(client.history[index]);
+                return getCard(sortedHistory[index]);
               },
-              itemCount: client.history.length,
+              itemCount: sortedHistory.length,
             ),
           ),
         ],
@@ -111,8 +113,37 @@ class _ClientPageState extends State<ClientPage> {
     );
   }
 
-  ServiceCard getCard(ClientService clientService) {
-    Service service = clientService.service;
-    return ServiceCard(service: service);
+  FlatButton getCard(ClientService clientService) {
+    return FlatButton(
+      onPressed: null,
+      onLongPress: () => showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Supprimer cette prestation de l'historique ?"),
+              content: Text(
+                  "Êtes-vous sur de vouloir supprimer la prestation " +
+                      clientService.service.name +
+                      " de l'historique de " +
+                      client.getName() +
+                      " ?"),
+              actions: <Widget>[
+                new FlatButton(
+                  child: Text(
+                    "Supprimer",
+                    style: removeButton,
+                  ),
+                  onPressed: () => {
+                    client.history.remove(clientService),
+                    allServicesList.remove(clientService),
+                    DataManager().saveClients(),
+                    Utils.openPage(context, ClientPage(client)),
+                  },
+                ),
+              ],
+            );
+          }),
+      child: ServiceCard(clientService: clientService),
+    );
   }
 }

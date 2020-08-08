@@ -99,13 +99,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   getData() {
-    print("first " + firstDate.toString());
-    print("second " + secondDate.toString());
     totalNumber = 0;
     totalMoney = 0;
     allServicesList.forEach(
       (element) {
-        print(element.date);
         if ((element.date.isAfter(secondDate) &&
                 element.date.isBefore(firstDate)) ||
             (element.date.isAfter(firstDate) &&

@@ -73,9 +73,14 @@ class _ServicesPageState extends State<ServicesPage> {
     return servicesList;
   }
 
-  ServiceCard getCard(Service service) {
-    return ServiceCard(
-      service: service,
+  FlatButton getCard(Service service) {
+    return FlatButton(
+      child: ServiceCard(service: service),
+      onPressed: null,
+      onLongPress: () => Utils.openPage(
+        context,
+        AddServicePage(service: service),
+      ),
     );
   }
 }

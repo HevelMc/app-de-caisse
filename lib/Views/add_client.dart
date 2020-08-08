@@ -165,11 +165,9 @@ class _AddClientPageState extends State<AddClientPage> {
                           children: <TextSpan>[
                             TextSpan(text: 'Anniversaire : '),
                             TextSpan(
-                              text: (((birthday.day < 10) ? "0" : "") +
-                                  birthday.day.toString() +
+                              text: (birthday.day.toString().padLeft(2, '0') +
                                   "/" +
-                                  ((birthday.month < 10) ? "0" : "") +
-                                  birthday.month.toString()),
+                                  birthday.month.toString().padLeft(2, '0')),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
@@ -226,7 +224,7 @@ class _AddClientPageState extends State<AddClientPage> {
                       label: Text(
                         (client == null) ? "Ajouter" : "Modifier",
                         textAlign: TextAlign.center,
-                        style: addButton,
+                        style: client == null ? addButton : editButton,
                       ),
                       icon: Icon(
                         (client == null) ? Icons.add : Icons.edit,

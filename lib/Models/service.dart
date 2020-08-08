@@ -22,7 +22,11 @@ class Service {
   Map<String, dynamic> toJson() => _$ServiceToJson(this);
 
   String getName() {
-    return this.name;
+    String name = this.name;
+    name = name.replaceAll(" +", "+");
+    name = name.replaceAll("+ ", "+");
+    name = name.replaceAll("+", "\n+ ");
+    return name;
   }
 
   int getPrice() {

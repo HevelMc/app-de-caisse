@@ -10,24 +10,36 @@ import 'services.dart';
 import 'bottom_bar.dart';
 
 class AddServicePage extends StatefulWidget {
-  final String title = "Ajouter une prestation";
+  final Service service;
+
+  const AddServicePage({Key key, this.service}) : super(key: key);
 
   @override
-  _AddServicePageState createState() => _AddServicePageState();
+  _AddServicePageState createState() => _AddServicePageState(service);
 }
 
 class _AddServicePageState extends State<AddServicePage> {
+  final Service service;
   final _formKey = GlobalKey<FormState>();
   String name;
   int price;
   int duration;
   bool package = false;
-  DateTime birthday;
+
+  _AddServicePageState(this.service) {
+    if (service != null) {
+      name = service.name;
+      price = service.price;
+      duration = service.duration;
+      package = service.package;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(widget.title).build(),
+      appBar: TopBar(service == null ? "Ajouter une prestation" : service.name)
+          .build(),
       body: Container(
         margin: EdgeInsets.all(20),
         child: Form(
@@ -36,6 +48,7 @@ class _AddServicePageState extends State<AddServicePage> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  initialValue: this.name,
                   autofocus: true,
                   autocorrect: false,
                   style: defaultStyle,
@@ -51,6 +64,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   onChanged: (newValue) => this.name = newValue,
                 ),
                 TextFormField(
+                  initialValue: price == null ? null : this.price.toString(),
                   keyboardType: TextInputType.number,
                   style: defaultStyle,
                   decoration: InputDecoration(
@@ -68,6 +82,8 @@ class _AddServicePageState extends State<AddServicePage> {
                   children: <Widget>[
                     Flexible(
                       child: TextFormField(
+                        initialValue:
+                            duration == null ? null : this.duration.toString(),
                         keyboardType: TextInputType.number,
                         style: defaultStyle,
                         decoration: InputDecoration(
@@ -121,12 +137,20 @@ class _AddServicePageState extends State<AddServicePage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        servicesList.add(Service(
-                          this.name,
-                          this.price,
-                          this.duration,
-                          this.package,
-                        ));
+                        if (this.service == null) {
+                          servicesList.add(Service(
+                            this.name,
+                            this.price,
+                            this.duration,
+                            this.package,
+                          ));
+                        } else {
+                          service.name = this.name;
+                          service.price = this.price;
+                          service.duration = this.duration;
+                          service.package = this.package;
+                        }
+
                         DataManager().saveServices();
                         Utils.openPage(
                           context,
@@ -135,16 +159,70 @@ class _AddServicePageState extends State<AddServicePage> {
                       }
                     },
                     label: Text(
-                      "Ajouter",
+                      service == null ? "Ajouter" : "Modifier",
                       textAlign: TextAlign.center,
-                      style: addButton,
+                      style: service == null ? addButton : editButton,
                     ),
                     icon: Icon(
-                      Icons.add,
-                      size: 40,
+                      service == null ? Icons.add : Icons.edit,
+                      size: 30,
                     ),
                   ),
                 ),
+                if (this.service != null)
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(3, 3),
+                          blurRadius: 3,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: FlatButton.icon(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 10,
+                      ),
+                      onPressed: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Supprimer le service ?"),
+                              content: Text(
+                                  "Êtes-vous sur de vouloir supprimer " +
+                                      service.getName() +
+                                      " ?"),
+                              actions: <Widget>[
+                                new FlatButton(
+                                  child: Text(
+                                    "Supprimer",
+                                    style: removeButton,
+                                  ),
+                                  onPressed: () => {
+                                    servicesList.remove(service),
+                                    DataManager().saveServices(),
+                                    Utils.openPage(context, ServicesPage()),
+                                  },
+                                ),
+                              ],
+                            );
+                          }),
+                      label: Text(
+                        "Supprimer",
+                        textAlign: TextAlign.center,
+                        style: removeButton,
+                      ),
+                      icon: Icon(
+                        Icons.delete,
+                        size: 30,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
