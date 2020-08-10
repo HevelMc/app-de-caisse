@@ -66,7 +66,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   style: defaultStyle,
                   decoration: InputDecoration(
                     icon: Icon(Icons.text_fields),
-                    labelText: modifyCategory ? 'Nom de la catégorie ' : 'Nom de la prestation',
+                    labelText: (category == null) ? 'Nom de la catégorie ' : 'Nom de la prestation',
                     labelStyle: defaultStyle,
                   ),
                   validator: (value) {
@@ -75,7 +75,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   },
                   onChanged: (newValue) => this.name = newValue,
                 ),
-                if (!modifyCategory)
+                if (!modifyCategory && category != null)
                   TextFormField(
                     initialValue: price == null ? null : this.price.toString(),
                     keyboardType: TextInputType.number,
@@ -91,7 +91,7 @@ class _AddServicePageState extends State<AddServicePage> {
                     },
                     onChanged: (newValue) => this.price = int.tryParse(newValue),
                   ),
-                if (!modifyCategory)
+                if (!modifyCategory && category != null)
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -115,7 +115,7 @@ class _AddServicePageState extends State<AddServicePage> {
                               title: const Text(
                                 'Forfait',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   color: Colors.black54,
                                 ),
                               ),

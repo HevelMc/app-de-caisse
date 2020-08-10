@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'client_services.dart';
-import 'service.dart';
 
 class DataManager {
   save(String key, value) async {

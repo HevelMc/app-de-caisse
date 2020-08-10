@@ -1,5 +1,6 @@
 import 'package:Caisse/Models/client_services.dart';
 import 'package:Caisse/Models/data.dart';
+import 'package:Caisse/Models/pdf.dart';
 import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,21 +14,25 @@ import 'service_card.dart';
 import 'bottom_bar.dart';
 
 class AddToClientPage extends StatefulWidget {
-  AddToClientPage({Key key, @required this.client}) : super(key: key);
+  AddToClientPage({Key key, @required this.client, this.date}) : super(key: key);
 
   final String title = "Ajouter au client";
+  final DateTime date;
   final Client client;
 
   @override
-  _AddToClientPageState createState() => _AddToClientPageState(client);
+  _AddToClientPageState createState() => _AddToClientPageState(client, date);
 }
 
 class _AddToClientPageState extends State<AddToClientPage> {
-  _AddToClientPageState(this.client);
+  _AddToClientPageState(this.client, DateTime date) {
+    if (date == null) date = DateTime.now();
+    this.date = date;
+  }
 
   String paymentMethod = 'Carte bancaire';
   final Client client;
-  DateTime date = DateTime.now();
+  DateTime date;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -55,11 +60,7 @@ class _AddToClientPageState extends State<AddToClientPage> {
                 child: FlatButton.icon(
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                   onPressed: () => {
-                    Utils.openPage(
-                      context,
-                      AddServiceToClientPage(client: client),
-                      false,
-                    ),
+                    Utils.openPage(context, AddServiceToClientPage(client: client, date: date), false),
                   },
                   label: Text(
                     "Ajouter une prestation",
@@ -227,22 +228,10 @@ class _AddToClientPageState extends State<AddToClientPage> {
                       ),
                       child: FlatButton.icon(
                         //padding: EdgeInsets.symmetric(horizontal: 10),
-                        onPressed: () => {
-                          if (_formKey.currentState.validate())
-                            {
-                              selectedList.forEach((element) {
-                                ClientService cService = ClientService(
-                                  element,
-                                  this.date,
-                                );
-                                client.history.add(cService);
-                                allServicesList.add(cService);
-                              }),
-                              selectedList.clear(),
-                              DataManager().saveClients(),
-                              DataManager().saveAllServices(),
-                              Utils.openPage(context, ClientsPage()),
-                            }
+                        onPressed: validateForm,
+                        onLongPress: () async => {
+                          await Pdf().generateInvoice(client, selectedList, this.date),
+                          validateForm(),
                         },
                         label: Text(
                           "Valider",
@@ -266,6 +255,23 @@ class _AddToClientPageState extends State<AddToClientPage> {
     );
   }
 
+  validateForm() {
+    if (_formKey.currentState.validate()) {
+      selectedList.forEach((element) {
+        ClientService cService = ClientService(
+          element,
+          this.date,
+        );
+        client.history.add(cService);
+        allServicesList.add(cService);
+      });
+      selectedList.clear();
+      DataManager().saveClients();
+      DataManager().saveAllServices();
+      Utils.openPage(context, ClientsPage());
+    }
+  }
+
   int getTotal() {
     int total = 0;
     selectedList.forEach((element) {
@@ -279,18 +285,20 @@ class AddServiceToClientPage extends StatefulWidget {
   final String title = "Ajouter une prestation";
   final ServiceCategory category;
   final Client client;
+  final DateTime date;
 
-  const AddServiceToClientPage({Key key, @required this.client, this.category}) : super(key: key);
+  const AddServiceToClientPage({Key key, @required this.client, this.category, this.date}) : super(key: key);
 
   @override
-  _AddServiceToClientPageState createState() => _AddServiceToClientPageState(client, category);
+  _AddServiceToClientPageState createState() => _AddServiceToClientPageState(client, category, date);
 }
 
 class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
   final Client client;
   final ServiceCategory category;
+  final DateTime date;
 
-  _AddServiceToClientPageState(this.client, this.category);
+  _AddServiceToClientPageState(this.client, this.category, this.date);
 
   @override
   Widget build(BuildContext context) {
@@ -322,11 +330,14 @@ class _AddServiceToClientPageState extends State<AddServiceToClientPage> {
                     child: card,
                     onPressed: () {
                       if (category == null) {
-                        Utils.openPage(context,
-                            AddServiceToClientPage(client: client, category: serviceCategories[index]));
+                        Utils.openPage(
+                            context,
+                            AddServiceToClientPage(
+                                client: client, category: serviceCategories[index], date: date),
+                            false);
                       } else {
                         selectedList.add(category.list[index]);
-                        Utils.openPage(context, AddToClientPage(client: client));
+                        Utils.openPage(context, AddToClientPage(client: client, date: date));
                       }
                     },
                   );

@@ -69,7 +69,7 @@ class _ServicesPageState extends State<ServicesPage> {
                 if (category == null)
                   return getCardCategory(serviceCategories[index]);
                 else
-                  return getCard(category.list[index]);
+                  return getCard(category, category.list[index]);
               },
               itemCount: category == null ? serviceCategories.length : category.list.length,
             ),
@@ -80,13 +80,13 @@ class _ServicesPageState extends State<ServicesPage> {
     );
   }
 
-  FlatButton getCard(Service service) {
+  FlatButton getCard(ServiceCategory category, Service service) {
     return FlatButton(
       child: ServiceCard(service: service),
       onPressed: null,
       onLongPress: () => Utils.openPage(
         context,
-        AddServicePage(service: service),
+        AddServicePage(service: service, category: category),
       ),
     );
   }
