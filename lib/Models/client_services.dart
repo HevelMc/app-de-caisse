@@ -8,12 +8,13 @@ part 'client_services.g.dart';
 class ClientService {
   Service service;
   DateTime date;
-  ClientService(Service service, DateTime date) {
+  double newPrice;
+  ClientService(Service service, DateTime date, double newPrice) {
     this.service = service;
     this.date = date;
+    this.newPrice = newPrice;
   }
 
-  factory ClientService.fromJson(Map<String, dynamic> json) =>
-      _$ClientServiceFromJson(json);
+  factory ClientService.fromJson(Map<String, dynamic> json) => _$ClientServiceFromJson(json);
   Map<String, dynamic> toJson() => _$ClientServiceToJson(this);
 }

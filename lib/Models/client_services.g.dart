@@ -8,15 +8,13 @@ part of 'client_services.dart';
 
 ClientService _$ClientServiceFromJson(Map<String, dynamic> json) {
   return ClientService(
-    json['service'] == null
-        ? null
-        : Service.fromJson(json['service'] as Map<String, dynamic>),
+    json['service'] == null ? null : Service.fromJson(json['service'] as Map<String, dynamic>),
     json['date'] == null ? null : DateTime.parse(json['date'] as String),
+    json['newPrice'] == null ? null : json['newPrice'] as double,
   );
 }
 
-Map<String, dynamic> _$ClientServiceToJson(ClientService instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ClientServiceToJson(ClientService instance) => <String, dynamic>{
       'service': instance.service?.toJson(),
       'date': instance.date?.toIso8601String(),
     };

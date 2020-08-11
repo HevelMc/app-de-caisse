@@ -1,5 +1,4 @@
 import 'package:Caisse/main.dart';
-import 'package:intl/intl.dart';
 import 'package:Caisse/Models/styles.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   DateTime firstDate = DateTime.now().add(Duration(days: -7));
   DateTime secondDate = DateTime.now();
   int totalNumber = 0;
-  int totalMoney = 0;
+  double totalMoney = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +30,7 @@ class _HomePageState extends State<HomePage> {
             child: MaterialButton(
               color: Colors.deepOrangeAccent,
               onPressed: () async {
-                final List<DateTime> picked =
-                    await DateRagePicker.showDatePicker(
+                final List<DateTime> picked = await DateRagePicker.showDatePicker(
                   context: context,
                   initialFirstDate: DateTime.now().add(Duration(days: -7)),
                   initialLastDate: DateTime.now(),
@@ -47,8 +45,7 @@ class _HomePageState extends State<HomePage> {
                       picked[1] = c;
                     }
                     firstDate = picked[0];
-                    secondDate = picked[1]
-                        .add(Duration(hours: 23, minutes: 59, seconds: 59));
+                    secondDate = picked[1].add(Duration(hours: 23, minutes: 59, seconds: 59));
                   });
               },
               child: Text("Choisir la période", style: defaultStyle),
@@ -82,10 +79,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Text("Prestations : " + getData().toString(),
-                    style: defaultStyle),
-                Text("Total : " + totalMoney.toString() + "€",
-                    style: defaultStyle),
+                Text("Prestations : " + getData().toString(), style: defaultStyle),
+                Text("Total : " + totalMoney.toStringAsFixed(2) + "€", style: defaultStyle),
               ],
             ),
         ],
@@ -94,8 +89,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  static String formatDate(DateTime date) {
-    return DateFormat('d MMMM y', 'fr_FR').format(date);
+  String formatDate(DateTime date) {
+    return MaterialLocalizations.of(context).formatFullDate(date);
   }
 
   getData() {
@@ -103,10 +98,8 @@ class _HomePageState extends State<HomePage> {
     totalMoney = 0;
     allServicesList.forEach(
       (element) {
-        if ((element.date.isAfter(secondDate) &&
-                element.date.isBefore(firstDate)) ||
-            (element.date.isAfter(firstDate) &&
-                element.date.isBefore(secondDate)) ||
+        if ((element.date.isAfter(secondDate) && element.date.isBefore(firstDate)) ||
+            (element.date.isAfter(firstDate) && element.date.isBefore(secondDate)) ||
             element.date.isAtSameMomentAs(firstDate) ||
             element.date.isAtSameMomentAs(secondDate)) {
           totalNumber++;

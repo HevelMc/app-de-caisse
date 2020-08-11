@@ -5,20 +5,19 @@ part 'service.g.dart';
 @JsonSerializable(nullable: true, explicitToJson: true)
 class Service {
   String name;
-  int price;
+  double price;
   int duration;
   bool package;
   int id;
 
-  Service(String name, int price, int duration, bool package) {
+  Service(String name, double price, int duration, bool package) {
     this.name = name;
     this.price = price;
     this.duration = duration;
     this.package = package;
   }
 
-  factory Service.fromJson(Map<String, dynamic> json) =>
-      _$ServiceFromJson(json);
+  factory Service.fromJson(Map<String, dynamic> json) => _$ServiceFromJson(json);
   Map<String, dynamic> toJson() => _$ServiceToJson(this);
 
   String getName() {
@@ -29,8 +28,12 @@ class Service {
     return name;
   }
 
-  int getPrice() {
+  double getPrice() {
     return this.price;
+  }
+
+  String getFormattedPrice([bool withSpace = true]) {
+    return this.price.toStringAsFixed(2) + (withSpace ? " " : "") + "€";
   }
 
   String getDurationText() {

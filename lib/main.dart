@@ -1,8 +1,8 @@
-import 'package:Caisse/Models/client_services.dart';
-import 'package:Caisse/Models/service_category.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'Models/client_services.dart';
+import 'Models/service_category.dart';
 import 'Models/data.dart';
 import 'Models/client.dart';
 import 'Views/home.dart';
@@ -18,7 +18,6 @@ main() async {
   serviceCategories = await DataManager().loadCategories();
   clientsList = await DataManager().loadClients();
   allServicesList = await DataManager().loadAllServices();
-  await initializeDateFormatting('fr_FR', null);
   runApp(MyApp());
 }
 
@@ -33,6 +32,11 @@ class MyApp extends StatelessWidget {
       ),
       home: HomePage(),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [const Locale('en', ''), const Locale('fr', 'FR')],
     );
   }
 }

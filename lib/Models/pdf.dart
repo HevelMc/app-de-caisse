@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -14,10 +15,12 @@ import 'service.dart';
 class Pdf {
   Client client;
   List<Service> services;
+  BuildContext buildContext;
 
-  generateInvoice(Client client, List<Service> services, DateTime date) async {
+  generateInvoice(Client client, List<Service> services, DateTime date, BuildContext buildContext) async {
     this.client = client;
     this.services = services;
+    this.buildContext = buildContext;
     final pdf = pw.Document();
     Font myFont = Font.ttf(await rootBundle.load("assets/OpenSans-Regular.ttf"));
     Font myFontBold = Font.ttf(await rootBundle.load("assets/OpenSans-Bold.ttf"));
@@ -34,9 +37,9 @@ class Pdf {
               services.length,
               (index) => [
                 services[index].name,
-                services[index].price.toString() + " €",
+                services[index].getFormattedPrice(),
                 "0%",
-                services[index].price.toString() + " €"
+                services[index].getFormattedPrice()
               ],
             ),
           ),
@@ -81,7 +84,7 @@ class Pdf {
                             pw.Text('Facture #'),
                             pw.Text("00000"),
                             pw.Text('Date :'),
-                            pw.Text(_formatDate(DateTime.now())),
+                            pw.Text(_formatDate(DateTime.now(), buildContext)),
                             pw.Text(''),
                             pw.Text(''),
                             pw.Text('Adressée à :'),
@@ -177,7 +180,7 @@ class Pdf {
             height: 70,
             child: pw.FittedBox(
               child: pw.Text(
-                'Total: ' + getTotal().toString() + ' €',
+                'Total: ' + getTotal().toStringAsFixed(2) + ' €',
                 style: pw.TextStyle(
                   color: PdfColors.blueGrey,
                   fontStyle: pw.FontStyle.italic,
@@ -252,13 +255,12 @@ class Pdf {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final format = DateFormat('d MMMM y', 'fr_FR');
-    return format.format(date);
+  String _formatDate(DateTime date, BuildContext buildContext) {
+    return MaterialLocalizations.of(buildContext).formatFullDate(date);
   }
 
-  int getTotal() {
-    int total = 0;
+  double getTotal() {
+    double total = 0;
     services.forEach((element) {
       total += element.price;
     });
@@ -268,7 +270,7 @@ class Pdf {
   pw.Widget _contentFooter(pw.Context context) {
     return pw.Container(
       margin: pw.EdgeInsets.only(top: 50),
-      child: Row(
+      child: pw.Row(
         children: [
           pw.Expanded(
             flex: 2,
@@ -325,7 +327,7 @@ class Pdf {
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text('Total:'),
-                          pw.Text(getTotal().toString() + ' €'),
+                          pw.Text(getTotal().toStringAsFixed(2) + ' €'),
                         ],
                       ),
                     ),

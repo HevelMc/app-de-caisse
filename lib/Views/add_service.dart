@@ -26,7 +26,7 @@ class _AddServicePageState extends State<AddServicePage> {
   final ServiceCategory category;
   final _formKey = GlobalKey<FormState>();
   String name;
-  int price;
+  double price;
   int duration;
   bool package = false;
   bool modifyCategory = false;
@@ -89,7 +89,7 @@ class _AddServicePageState extends State<AddServicePage> {
                       if (value.isEmpty) return 'Veuillez entrer le prix';
                       return null;
                     },
-                    onChanged: (newValue) => this.price = int.tryParse(newValue),
+                    onChanged: (newValue) => this.price = double.tryParse(newValue),
                   ),
                 if (!modifyCategory && category != null)
                   Row(

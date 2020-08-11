@@ -9,7 +9,7 @@ part of 'service.dart';
 Service _$ServiceFromJson(Map<String, dynamic> json) {
   return Service(
     json['name'] as String,
-    json['price'] as int,
+    double.parse(json['price'].toString()),
     json['duration'] as int,
     json['package'] as bool,
   )..id = json['id'] as int;

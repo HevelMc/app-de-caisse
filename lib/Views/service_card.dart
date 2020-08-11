@@ -18,6 +18,8 @@ class ServiceCard extends StatelessWidget {
     Service service = (this.clientService != null) ? this.clientService.service : this.service;
     DateTime date = (this.clientService == null) ? null : this.clientService.date;
     String name = (service != null) ? service.getName() : category.name;
+    bool isReducted =
+        clientService != null && clientService.newPrice != null && service.price != clientService.newPrice;
     return Container(
       margin: EdgeInsets.all(15),
       child: Container(
@@ -25,11 +27,33 @@ class ServiceCard extends StatelessWidget {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            if (service != null)
+            if (service != null && !isReducted)
               Positioned(
                 top: 10,
                 left: 10,
-                child: textWithBackground(service.getPrice().toString() + "€"),
+                child: textWithBackground(service.getFormattedPrice(false)),
+              ),
+            if (isReducted)
+              Positioned(
+                top: 10,
+                left: 10,
+                child: widgetWithBackground(
+                  Row(
+                    children: [
+                      Text(
+                        service.getFormattedPrice(false),
+                        style: cardPriceStyle.apply(
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: Colors.redAccent,
+                        ),
+                      ),
+                      Text(
+                        " " + this.clientService.newPrice.toStringAsFixed(2) + "€",
+                        style: cardPriceStyle,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             if (service != null && service.package)
               Positioned(
