@@ -17,6 +17,9 @@ class _HomePageState extends State<HomePage> {
   DateTime secondDate = DateTime.now();
   int totalNumber = 0;
   double totalMoney = 0;
+  double totalCreditCard;
+  double totalCash;
+  double totalCheque;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 10),
             alignment: Alignment.topCenter,
-            child: MaterialButton(
+            child: FlatButton.icon(
               color: Colors.deepOrangeAccent,
               onPressed: () async {
                 final List<DateTime> picked = await DateRagePicker.showDatePicker(
@@ -48,11 +51,13 @@ class _HomePageState extends State<HomePage> {
                     secondDate = picked[1].add(Duration(hours: 23, minutes: 59, seconds: 59));
                   });
               },
-              child: Text("Choisir la période", style: defaultStyle),
+              label: Text("Choisir la période", style: defaultStyle),
+              icon: Icon(Icons.date_range, size: 24),
             ),
           ),
           if (firstDate != null && secondDate != null)
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -61,26 +66,52 @@ class _HomePageState extends State<HomePage> {
                     text: TextSpan(
                       style: TextStyle(color: Colors.black, fontSize: 22),
                       children: [
-                        TextSpan(text: "Statistiques entre le "),
+                        TextSpan(
+                          text: "Statistiques entre le\n",
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        ),
                         TextSpan(
                           text: formatDate(firstDate),
                           style: TextStyle(
                             backgroundColor: Colors.orange.withOpacity(0.2),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        TextSpan(text: " et le "),
+                        TextSpan(
+                          text: "\net le\n",
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        ),
                         TextSpan(
                           text: formatDate(secondDate),
                           style: TextStyle(
                             backgroundColor: Colors.orange.withOpacity(0.2),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Text("Prestations : " + getData().toString(), style: defaultStyle),
-                Text("Total : " + totalMoney.toStringAsFixed(2) + "€", style: defaultStyle),
+                Container(
+                  margin: EdgeInsets.only(left: 40, right: 40, top: 20),
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        Text("Prestations : "),
+                        Spacer(),
+                        Text(getData().toString()),
+                      ]),
+                      Row(children: [Text("Total : "), Spacer(), Text(Utils.formatPrice(totalMoney))]),
+                      Row(children: [
+                        Text("\nCartes Bancaires : "),
+                        Spacer(),
+                        Text("\n" + Utils.formatPrice(totalCreditCard))
+                      ]),
+                      Row(children: [Text("Espèces : "), Spacer(), Text(Utils.formatPrice(totalCash))]),
+                      Row(children: [Text("Chèques : "), Spacer(), Text(Utils.formatPrice(totalCheque))]),
+                    ],
+                  ),
+                ),
               ],
             ),
         ],
@@ -96,14 +127,20 @@ class _HomePageState extends State<HomePage> {
   getData() {
     totalNumber = 0;
     totalMoney = 0;
+    totalCreditCard = 0;
+    totalCash = 0;
+    totalCheque = 0;
+
     allServicesList.forEach(
       (element) {
-        if ((element.date.isAfter(secondDate) && element.date.isBefore(firstDate)) ||
-            (element.date.isAfter(firstDate) && element.date.isBefore(secondDate)) ||
-            element.date.isAtSameMomentAs(firstDate) ||
-            element.date.isAtSameMomentAs(secondDate)) {
+        if ((element.date.compareTo(secondDate) > -1 && element.date.compareTo(firstDate) < 1) ||
+            (element.date.compareTo(firstDate) > -1 && element.date.compareTo(secondDate) < 1)) {
           totalNumber++;
-          totalMoney += element.service.price;
+          double price = (element.newPrice == null) ? element.service.price : element.newPrice;
+          totalMoney += price;
+          if (element.paymentMethod == "CB") totalCreditCard += price;
+          if (element.paymentMethod == "Espèces") totalCash += price;
+          if (element.paymentMethod == "Chèque") totalCheque += price;
         }
       },
     );

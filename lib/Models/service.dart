@@ -32,10 +32,6 @@ class Service {
     return this.price;
   }
 
-  String getFormattedPrice([bool withSpace = true]) {
-    return this.price.toStringAsFixed(2) + (withSpace ? " " : "") + "€";
-  }
-
   String getDurationText() {
     int hours = duration ~/ 60;
     int minutes = duration % 60;

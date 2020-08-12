@@ -5,6 +5,7 @@ import '../Models/client_services.dart';
 import '../Models/styles.dart';
 import '../Models/colors.dart';
 import '../Models/service.dart';
+import '../main.dart';
 
 class ServiceCard extends StatelessWidget {
   final Service service;
@@ -31,7 +32,7 @@ class ServiceCard extends StatelessWidget {
               Positioned(
                 top: 10,
                 left: 10,
-                child: textWithBackground(service.getFormattedPrice(false)),
+                child: textWithBackground(Utils.formatPrice(service.price, false)),
               ),
             if (isReducted)
               Positioned(
@@ -41,14 +42,14 @@ class ServiceCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        service.getFormattedPrice(false),
+                        Utils.formatPrice(service.price, false),
                         style: cardPriceStyle.apply(
                           decoration: TextDecoration.lineThrough,
                           decorationColor: Colors.redAccent,
                         ),
                       ),
                       Text(
-                        " " + this.clientService.newPrice.toStringAsFixed(2) + "€",
+                        " " + Utils.formatPrice(this.clientService.newPrice, false),
                         style: cardPriceStyle,
                       ),
                     ],

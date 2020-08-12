@@ -9,10 +9,13 @@ class ClientService {
   Service service;
   DateTime date;
   double newPrice;
-  ClientService(Service service, DateTime date, double newPrice) {
+  String paymentMethod;
+
+  ClientService(Service service, DateTime date, double newPrice, String paymentMethod) {
     this.service = service;
     this.date = date;
     this.newPrice = newPrice;
+    this.paymentMethod = paymentMethod;
   }
 
   factory ClientService.fromJson(Map<String, dynamic> json) => _$ClientServiceFromJson(json);

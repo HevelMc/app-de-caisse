@@ -55,4 +55,13 @@ class Utils {
         MaterialPageRoute(builder: (context) => page),
       );
   }
+
+  static String formatPrice([double price, bool withSpace = true]) {
+    String priceText;
+    if (price.roundToDouble() == price)
+      priceText = price.round().toString();
+    else
+      priceText = price.toStringAsFixed(2);
+    return priceText + (withSpace ? " " : "") + "€";
+  }
 }

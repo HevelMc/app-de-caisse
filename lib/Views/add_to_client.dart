@@ -287,14 +287,17 @@ class _AddToClientPageState extends State<AddToClientPage> {
   validateForm() {
     if (_formKey.currentState.validate()) {
       if (paymentMethod != '') {
+        int index = 0;
         selectedList.forEach((element) {
           ClientService cService = ClientService(
             element,
             this.date,
-            getTotal(),
+            element.price * (1 - discounts[index] / 100),
+            this.paymentMethod,
           );
           client.history.add(cService);
           allServicesList.add(cService);
+          index++;
         });
         selectedList.clear();
         DataManager().saveClients();

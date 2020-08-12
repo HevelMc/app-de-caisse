@@ -11,6 +11,7 @@ ClientService _$ClientServiceFromJson(Map<String, dynamic> json) {
     json['service'] == null ? null : Service.fromJson(json['service'] as Map<String, dynamic>),
     json['date'] == null ? null : DateTime.parse(json['date'] as String),
     json['newPrice'] == null ? null : json['newPrice'] as double,
+    json['paymentMethod'] == null ? null : json['paymentMethod'] as String,
   );
 }
 

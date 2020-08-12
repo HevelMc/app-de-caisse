@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart';
 
+import '../main.dart';
 import 'client.dart';
 import 'service.dart';
 
@@ -37,9 +38,9 @@ class Pdf {
               services.length,
               (index) => [
                 services[index].name,
-                services[index].getFormattedPrice(),
+                Utils.formatPrice(services[index].price),
                 "0%",
-                services[index].getFormattedPrice()
+                Utils.formatPrice(services[index].price),
               ],
             ),
           ),
@@ -180,7 +181,7 @@ class Pdf {
             height: 70,
             child: pw.FittedBox(
               child: pw.Text(
-                'Total: ' + getTotal().toStringAsFixed(2) + ' €',
+                'Total: ' + Utils.formatPrice(getTotal()),
                 style: pw.TextStyle(
                   color: PdfColors.blueGrey,
                   fontStyle: pw.FontStyle.italic,
@@ -327,7 +328,7 @@ class Pdf {
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text('Total:'),
-                          pw.Text(getTotal().toStringAsFixed(2) + ' €'),
+                          pw.Text(Utils.formatPrice(getTotal())),
                         ],
                       ),
                     ),
