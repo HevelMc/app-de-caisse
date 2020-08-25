@@ -166,6 +166,7 @@ class _AddServicePageState extends State<AddServicePage> {
                           service.duration = this.duration;
                           service.package = this.package;
                         }
+                        sortServices();
 
                         DataManager().saveCategories();
                         Utils.openPage(
@@ -249,6 +250,10 @@ class _AddServicePageState extends State<AddServicePage> {
       ),
       bottomNavigationBar: BottomBar(2),
     );
+  }
+
+  void sortServices() {
+    serviceCategories.forEach((element) => element.list.sort((a, b) => a.price.compareTo(b.price)));
   }
 }
 
