@@ -172,9 +172,31 @@ class _AddToClientPageState extends State<AddToClientPage> {
                 child: Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) {
-                      Container card = ServiceCard(
-                        service: selectedList[index],
-                      ).build(context);
+                      FlatButton card = FlatButton(
+                        child: ServiceCard(service: selectedList[index]),
+                        onPressed: null,
+                        onLongPress: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Retirer la prestation ?"),
+                              actions: <Widget>[
+                                new FlatButton(
+                                  child: Text(
+                                    "Retirer",
+                                    style: removeButton,
+                                  ),
+                                  onPressed: () => {
+                                    selectedList.removeAt(index),
+                                    discounts.removeAt(index),
+                                    Utils.openPage(context, AddToClientPage(client: client)),
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
                       return Column(
                         children: <Widget>[
                           card,

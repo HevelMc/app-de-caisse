@@ -18,4 +18,6 @@ ClientService _$ClientServiceFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ClientServiceToJson(ClientService instance) => <String, dynamic>{
       'service': instance.service?.toJson(),
       'date': instance.date?.toIso8601String(),
+      'newPrice': instance.newPrice,
+      'paymentMethod': instance.paymentMethod,
     };
